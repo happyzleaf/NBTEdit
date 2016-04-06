@@ -1,9 +1,9 @@
 package com.mcf.davidee.nbtedit.forge;
 
-import java.io.File;
-
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
+
+import java.io.File;
 
 public class CommonProxy {
 	public void registerInformation(){

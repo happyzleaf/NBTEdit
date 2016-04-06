@@ -1,18 +1,16 @@
 package com.mcf.davidee.nbtedit.packets;
 
-import static com.mcf.davidee.nbtedit.NBTEdit.SECTION_SIGN;
+import com.mcf.davidee.nbtedit.NBTEdit;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
-
-import java.io.IOException;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.util.MovingObjectPosition.MovingObjectType;
+import net.minecraft.util.math.RayTraceResult;
 
-import com.mcf.davidee.nbtedit.NBTEdit;
+import java.io.IOException;
+
+import static com.mcf.davidee.nbtedit.NBTEdit.SECTION_SIGN;
 
 public class MouseOverPacket extends AbstractPacket {
 	
@@ -28,12 +26,12 @@ public class MouseOverPacket extends AbstractPacket {
 
 	@Override
 	public void handleClientSide(EntityPlayer player) {
-		MovingObjectPosition pos = Minecraft.getMinecraft().objectMouseOver;
+		RayTraceResult pos = Minecraft.getMinecraft().objectMouseOver;
 		AbstractPacket packet = null;
 		if (pos != null)
 			if (pos.entityHit != null)
 				packet = new EntityRequestPacket(pos.entityHit.getEntityId());
-			else if (pos.typeOfHit == MovingObjectType.BLOCK)
+			else if (pos.typeOfHit == RayTraceResult.Type.BLOCK)
 				packet = new TileRequestPacket(pos.getBlockPos());
 		if (packet == null) 
 			sendMessageToPlayer(player, SECTION_SIGN + "cError - No tile or entity selected");

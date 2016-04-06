@@ -2,12 +2,11 @@ package com.mcf.davidee.nbtedit.packets;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
-
-import java.io.IOException;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.text.TextComponentString;
+
+import java.io.IOException;
 
 
 /**
@@ -47,6 +46,6 @@ public abstract class AbstractPacket {
     public abstract void handleServerSide(EntityPlayerMP player);
     
     public void sendMessageToPlayer(EntityPlayer player, String msg) {
-    	player.addChatMessage(new ChatComponentText(msg));
+    	player.addChatMessage(new TextComponentString(msg));
     }
 }

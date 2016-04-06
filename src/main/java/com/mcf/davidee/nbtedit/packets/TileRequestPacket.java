@@ -1,16 +1,15 @@
 package com.mcf.davidee.nbtedit.packets;
 
-import static com.mcf.davidee.nbtedit.NBTEdit.SECTION_SIGN;
-
 import com.mcf.davidee.nbtedit.NBTEdit;
-
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
+
+import static com.mcf.davidee.nbtedit.NBTEdit.SECTION_SIGN;
 
 public class TileRequestPacket extends AbstractPacket {
 	

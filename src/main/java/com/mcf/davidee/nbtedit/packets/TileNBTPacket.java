@@ -1,23 +1,22 @@
 package com.mcf.davidee.nbtedit.packets;
 
-import static com.mcf.davidee.nbtedit.NBTEdit.SECTION_SIGN;
+import com.mcf.davidee.nbtedit.NBTEdit;
+import com.mcf.davidee.nbtedit.NBTHelper;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufInputStream;
 import io.netty.buffer.ByteBufOutputStream;
 import io.netty.channel.ChannelHandlerContext;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.math.BlockPos;
 
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.util.logging.Level;
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
-
-import com.mcf.davidee.nbtedit.NBTEdit;
-import com.mcf.davidee.nbtedit.NBTHelper;
-import net.minecraft.util.BlockPos;
+import static com.mcf.davidee.nbtedit.NBTEdit.SECTION_SIGN;
 
 public class TileNBTPacket extends AbstractPacket {
 	
