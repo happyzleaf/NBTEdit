@@ -1,14 +1,12 @@
 package com.mcf.davidee.nbtedit.gui;
 
-import java.awt.*;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.logging.Level;
-
+import com.mcf.davidee.nbtedit.NBTEdit;
+import com.mcf.davidee.nbtedit.NBTHelper;
+import com.mcf.davidee.nbtedit.NBTStringHelper;
+import com.mcf.davidee.nbtedit.nbt.NBTTree;
+import com.mcf.davidee.nbtedit.nbt.NamedNBT;
+import com.mcf.davidee.nbtedit.nbt.Node;
+import com.mcf.davidee.nbtedit.nbt.SaveStates;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.Gui;
@@ -20,18 +18,15 @@ import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.ResourceLocation;
-
+import org.apache.logging.log4j.Level;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
-import com.mcf.davidee.nbtedit.NBTEdit;
-import com.mcf.davidee.nbtedit.NBTHelper;
-import com.mcf.davidee.nbtedit.NBTStringHelper;
-import com.mcf.davidee.nbtedit.nbt.NBTTree;
-import com.mcf.davidee.nbtedit.nbt.NamedNBT;
-import com.mcf.davidee.nbtedit.nbt.Node;
-import com.mcf.davidee.nbtedit.nbt.SaveStates;
+import java.awt.*;
+import java.util.*;
+import java.util.List;
+import java.util.Map.Entry;
 
 
 /*
@@ -417,8 +412,8 @@ public class GuiNBTTree extends Gui{
 		else{ //Paste into
 			Map<String, NBTBase> nbtMap = NBTHelper.getMap(button.save.tag);
 			if (nbtMap.isEmpty()){
-				NBTEdit.log(Level.WARNING, "Unable to copy from save \"" + button.save.name +"\".");
-				NBTEdit.log(Level.WARNING, "The save is invalid - a valid save must only contain 1 core NBTBase");
+				NBTEdit.log(Level.WARN, "Unable to copy from save \"" + button.save.name +"\".");
+				NBTEdit.log(Level.WARN, "The save is invalid - a valid save must only contain 1 core NBTBase");
 			}
 			else{
 				if (focused == null)

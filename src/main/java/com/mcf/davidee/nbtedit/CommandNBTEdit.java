@@ -1,6 +1,6 @@
 package com.mcf.davidee.nbtedit;
 
-import java.util.logging.Level;
+import org.apache.logging.log4j.Level;
 
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
@@ -40,16 +40,16 @@ public class CommandNBTEdit extends CommandBase{
 				int x = parseInt(var2[0]);
 				int y = parseInt(var2[1]);
 				int z = parseInt(var2[2]);
-				NBTEdit.log(Level.FINE, sender.getName() + " issued command \"/nbtedit " + x + " " + y + " " + z + "\"");
+				NBTEdit.log(Level.TRACE, sender.getName() + " issued command \"/nbtedit " + x + " " + y + " " + z + "\"");
 				new TileRequestPacket(new BlockPos(x,y,z)).handleServerSide(player);
 			}
 			else if (var2.length == 1) {
 				int entityID = (var2[0].equalsIgnoreCase("me")) ? player.getEntityId() : parseInt(var2[0], 0);
-				NBTEdit.log(Level.FINE, sender.getName() + " issued command \"/nbtedit " + entityID +  "\"");
+				NBTEdit.log(Level.TRACE, sender.getName() + " issued command \"/nbtedit " + entityID +  "\"");
 				new EntityRequestPacket(entityID).handleServerSide(player);
 			}
 			else if (var2.length == 0) {
-				NBTEdit.log(Level.FINE, sender.getName() + " issued command \"/nbtedit\"");
+				NBTEdit.log(Level.TRACE, sender.getName() + " issued command \"/nbtedit\"");
 				NBTEdit.DISPATCHER.sendTo(new MouseOverPacket(), player);
 			}
 			else  {
@@ -59,7 +59,7 @@ public class CommandNBTEdit extends CommandBase{
 					if (i != var2.length - 1)
 						s += " ";
 				}
-				NBTEdit.log(Level.FINE, sender.getName() + " issued invalid command \"/nbtedit " + s + "\"");
+				NBTEdit.log(Level.TRACE, sender.getName() + " issued invalid command \"/nbtedit " + s + "\"");
 				throw new WrongUsageException("Pass 0, 1, or 3 integers -- ex. /nbtedit");
 			}
 		}

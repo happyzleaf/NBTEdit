@@ -1,33 +1,32 @@
 package com.mcf.davidee.nbtedit.packets;
 
-import static com.mcf.davidee.nbtedit.NBTEdit.SECTION_SIGN;
+import com.mcf.davidee.nbtedit.NBTEdit;
+import com.mcf.davidee.nbtedit.NBTHelper;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufInputStream;
 import io.netty.buffer.ByteBufOutputStream;
 import io.netty.channel.ChannelHandlerContext;
-
-import java.io.DataInputStream;
-import java.io.IOException;
-import java.util.logging.Level;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-
-import com.mcf.davidee.nbtedit.NBTEdit;
-import com.mcf.davidee.nbtedit.NBTHelper;
 import net.minecraft.util.BlockPos;
+import org.apache.logging.log4j.Level;
+
+import java.io.DataInputStream;
+import java.io.IOException;
+
+import static com.mcf.davidee.nbtedit.NBTEdit.SECTION_SIGN;
 
 public class TileNBTPacket extends AbstractPacket {
-	
+
 	protected BlockPos pos;
 	protected NBTTagCompound tag;
-	
+
 	public TileNBTPacket() {
-		
+
 	}
-	
+
 	public TileNBTPacket(BlockPos pos, NBTTagCompound tag) {
 		this.pos = pos;
 		this.tag = tag;
@@ -62,20 +61,18 @@ public class TileNBTPacket extends AbstractPacket {
 			try {
 				te.readFromNBT(tag);
 				NBTEdit.DISPATCHER.sendToDimension(new TileNBTUpdatePacket(pos, tag), player.dimension); //Broadcast changes
-				NBTEdit.log(Level.FINE, player.getName() + " edited a tag -- Tile Entity at " + pos.getX() + "," + pos.getY() + "," + pos.getZ());
+				NBTEdit.log(Level.TRACE, player.getName() + " edited a tag -- Tile Entity at " + pos.getX() + "," + pos.getY() + "," + pos.getZ());
 				NBTEdit.logTag(tag);
 				sendMessageToPlayer(player, "Your changes have been saved");
-			}
-			catch(Throwable t) {
+			} catch (Throwable t) {
 				sendMessageToPlayer(player, SECTION_SIGN + "cSave Failed - Invalid NBT format for Tile Entity");
-				NBTEdit.log(Level.WARNING, player.getName() + " edited a tag and caused an exception");
+				NBTEdit.log(Level.WARN, player.getName() + " edited a tag and caused an exception");
 				NBTEdit.logTag(tag);
 				NBTEdit.throwing("TileNBTPacket", "handleServerSide", t);
 			}
-		}
-		else {
-			NBTEdit.log(Level.WARNING, player.getName() + " tried to edit a non-existant TileEntity at "+pos.getX()+","+pos.getY()+","+pos.getZ());
-			sendMessageToPlayer(player, SECTION_SIGN + "cSave Failed - There is no TileEntity at "+pos.getX()+","+pos.getY()+","+pos.getZ());
+		} else {
+			NBTEdit.log(Level.WARN, player.getName() + " tried to edit a non-existent TileEntity at " + pos.getX() + "," + pos.getY() + "," + pos.getZ());
+			sendMessageToPlayer(player, SECTION_SIGN + "cSave Failed - There is no TileEntity at " + pos.getX() + "," + pos.getY() + "," + pos.getZ());
 		}
 	}
 

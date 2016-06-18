@@ -1,15 +1,11 @@
 package com.mcf.davidee.nbtedit.packets;
 
-import static com.mcf.davidee.nbtedit.NBTEdit.SECTION_SIGN;
+import com.mcf.davidee.nbtedit.NBTEdit;
+import com.mcf.davidee.nbtedit.NBTHelper;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufInputStream;
 import io.netty.buffer.ByteBufOutputStream;
 import io.netty.channel.ChannelHandlerContext;
-
-import java.io.DataInputStream;
-import java.io.IOException;
-import java.util.logging.Level;
-
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -17,19 +13,22 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.play.server.S06PacketUpdateHealth;
 import net.minecraft.network.play.server.S1FPacketSetExperience;
 import net.minecraft.world.WorldSettings.GameType;
+import org.apache.logging.log4j.Level;
 
-import com.mcf.davidee.nbtedit.NBTEdit;
-import com.mcf.davidee.nbtedit.NBTHelper;
+import java.io.DataInputStream;
+import java.io.IOException;
+
+import static com.mcf.davidee.nbtedit.NBTEdit.SECTION_SIGN;
 
 public class EntityNBTPacket extends AbstractPacket {
-	
+
 	protected int entityID;
 	protected NBTTagCompound tag;
-	
+
 	public EntityNBTPacket() {
-		
+
 	}
-	
+
 	public EntityNBTPacket(int entityID, NBTTagCompound tag) {
 		this.entityID = entityID;
 		this.tag = tag;
@@ -64,7 +63,7 @@ public class EntityNBTPacket extends AbstractPacket {
 			try {
 				GameType preGameType = player.theItemInWorldManager.getGameType();
 				e.readFromNBT(tag);
-				NBTEdit.log(Level.FINE, player.getName() + " edited a tag -- Entity ID #" + entityID);
+				NBTEdit.log(Level.TRACE, player.getName() + " edited a tag -- Entity ID #" + entityID);
 				NBTEdit.logTag(tag);
 				if (e == player) { //Update player info
 					player.sendContainerToPlayer(player.inventoryContainer);
@@ -76,10 +75,9 @@ public class EntityNBTPacket extends AbstractPacket {
 					player.sendPlayerAbilities();
 				}
 				sendMessageToPlayer(player, "Your changes have been saved");
-			} 
-			catch(Throwable t) {
+			} catch (Throwable t) {
 				sendMessageToPlayer(player, SECTION_SIGN + "cSave Failed - Invalid NBT format for Entity");
-				NBTEdit.log(Level.WARNING, player.getName() + " edited a tag and caused an exception");
+				NBTEdit.log(Level.WARN, player.getName() + " edited a tag and caused an exception");
 				NBTEdit.logTag(tag);
 				NBTEdit.throwing("EntityNBTPacket", "handleServerSide", t);
 			}
