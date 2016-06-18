@@ -18,6 +18,8 @@ import net.minecraft.init.SoundEvents;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.util.ResourceLocation;
+import org.apache.logging.log4j.Level;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
@@ -26,7 +28,6 @@ import java.awt.*;
 import java.util.*;
 import java.util.List;
 import java.util.Map.Entry;
-import java.util.logging.Level;
 
 
 /*
@@ -412,8 +413,8 @@ public class GuiNBTTree extends Gui{
 		else{ //Paste into
 			Map<String, NBTBase> nbtMap = NBTHelper.getMap(button.save.tag);
 			if (nbtMap.isEmpty()){
-				NBTEdit.log(Level.WARNING, "Unable to copy from save \"" + button.save.name +"\".");
-				NBTEdit.log(Level.WARNING, "The save is invalid - a valid save must only contain 1 core NBTBase");
+				NBTEdit.log(Level.WARN, "Unable to copy from save \"" + button.save.name +"\".");
+				NBTEdit.log(Level.WARN, "The save is invalid - a valid save must only contain 1 core NBTBase");
 			}
 			else{
 				if (focused == null)
