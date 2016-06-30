@@ -1,8 +1,6 @@
 package com.mcf.davidee.nbtedit;
 
-import com.mcf.davidee.nbtedit.packets.EntityRequestPacket;
 import com.mcf.davidee.nbtedit.packets.MouseOverPacket;
-import com.mcf.davidee.nbtedit.packets.TileRequestPacket;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -11,7 +9,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
-
 import org.apache.logging.log4j.Level;
 
 public class CommandNBTEdit extends CommandBase {
@@ -21,8 +18,7 @@ public class CommandNBTEdit extends CommandBase {
 		return "nbtedit";
 	}
 	@Override
-	public String getCommandUsage(ICommandSender par1ICommandSender)
-	{
+	public String getCommandUsage(ICommandSender par1ICommandSender) {
 		return "/nbtedit OR /nbtedit <EntityId> OR /nbtedit <TileX> <TileY> <TileZ>";
 	}
 
@@ -36,18 +32,18 @@ public class CommandNBTEdit extends CommandBase {
 				int y = parseInt(args[1]);
 				int z = parseInt(args[2]);
 				NBTEdit.log(Level.TRACE, sender.getName() + " issued command \"/nbtedit " + x + " " + y + " " + z + "\"");
-				new TileRequestPacket(new BlockPos(x,y,z)).handleServerSide(player);
-			}
-			else if (args.length == 1) {
+				NBTEdit.NETWORK.sendTile(player, new BlockPos(x, y, z));
+
+			} else if (args.length == 1) {
 				int entityID = (args[0].equalsIgnoreCase("me")) ? player.getEntityId() : parseInt(args[0], 0);
 				NBTEdit.log(Level.TRACE, sender.getName() + " issued command \"/nbtedit " + entityID +  "\"");
-				new EntityRequestPacket(entityID).handleServerSide(player);
-			}
-			else if (args.length == 0) {
+				NBTEdit.NETWORK.sendEntity(player, entityID);
+
+			} else if (args.length == 0) {
 				NBTEdit.log(Level.TRACE, sender.getName() + " issued command \"/nbtedit\"");
-				NBTEdit.DISPATCHER.sendTo(new MouseOverPacket(), player);
-			}
-			else  {
+				NBTEdit.NETWORK.INSTANCE.sendTo(new MouseOverPacket(), player);
+
+			} else {
 				String s = "";
 				for (int i =0; i < args.length; ++i) {
 					s += args[i];
@@ -62,7 +58,7 @@ public class CommandNBTEdit extends CommandBase {
 
 	@Override
 	public boolean checkPermission(MinecraftServer server, ICommandSender sender) {
-		return sender instanceof EntityPlayer && (super.checkPermission(server, sender) || !NBTEdit.opOnly && ((EntityPlayer)sender).capabilities.isCreativeMode);
+		return sender instanceof EntityPlayer && NBTEdit.proxy.checkPermission((EntityPlayer) sender);
 	}
 
 }

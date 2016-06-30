@@ -13,9 +13,13 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.common.MinecraftForge;
@@ -28,7 +32,7 @@ import java.io.File;
 public class ClientProxy extends CommonProxy {
 
 	@Override
-	public void registerInformation(){
+	public void registerInformation() {
 		MinecraftForge.EVENT_BUS.register(this);
 		SaveStates save = NBTEdit.getSaveStates();
 		save.load();
@@ -36,7 +40,7 @@ public class ClientProxy extends CommonProxy {
 	}
 
 	@Override
-	public File getMinecraftDirectory(){
+	public File getMinecraftDirectory() {
 		return FMLClientHandler.instance().getClient().mcDataDir;
 	}
 
@@ -60,8 +64,15 @@ public class ClientProxy extends CommonProxy {
 		});
 	}
 
+	@Override
+	public void sendMessage(EntityPlayer player, String message, TextFormatting color) {
+		ITextComponent component = new TextComponentString(message);
+		component.getChatStyle().setColor(color);
+		Minecraft.getMinecraft().thePlayer.addChatMessage(component);
+	}
+
 	@SubscribeEvent
-	public void renderWorldLast(RenderWorldLastEvent event){
+	public void renderWorldLast(RenderWorldLastEvent event) {
 		GuiScreen curScreen = Minecraft.getMinecraft().currentScreen;
 		if (curScreen instanceof GuiEditNBTTree){
 			GuiEditNBTTree screen = (GuiEditNBTTree)curScreen;

@@ -117,9 +117,9 @@ public class GuiEditNBTTree extends GuiScreen{
 	
 	private void quitWithSave() {
 		if (entity)
-			NBTEdit.DISPATCHER.sendToServer(new EntityNBTPacket(entityOrX, guiTree.getNBTTree().toNBTTagCompound()));
+			NBTEdit.NETWORK.INSTANCE.sendToServer(new EntityNBTPacket(entityOrX, guiTree.getNBTTree().toNBTTagCompound()));
 		else
-			NBTEdit.DISPATCHER.sendToServer(new TileNBTPacket(new BlockPos(entityOrX, y, z), guiTree.getNBTTree().toNBTTagCompound()));
+			NBTEdit.NETWORK.INSTANCE.sendToServer(new TileNBTPacket(new BlockPos(entityOrX, y, z), guiTree.getNBTTree().toNBTTagCompound()));
 		mc.displayGuiScreen(null);
 		mc.setIngameFocus();
 
