@@ -1,7 +1,8 @@
 package com.mcf.davidee.nbtedit.forge;
 
-import java.io.File;
-
+import com.mcf.davidee.nbtedit.NBTEdit;
+import com.mcf.davidee.nbtedit.gui.GuiEditNBTTree;
+import com.mcf.davidee.nbtedit.nbt.SaveStates;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
@@ -11,26 +12,22 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.*;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.common.MinecraftForge;
-
-import org.lwjgl.opengl.GL11;
-
-import com.mcf.davidee.nbtedit.NBTEdit;
-import com.mcf.davidee.nbtedit.gui.GuiEditNBTTree;
-import com.mcf.davidee.nbtedit.nbt.SaveStates;
-
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import org.lwjgl.opengl.GL11;
+
+import java.io.File;
 
 public class ClientProxy extends CommonProxy {
 
 	@Override
-	public void registerInformation(){
+	public void registerInformation() {
 		MinecraftForge.EVENT_BUS.register(this);
 		SaveStates save = NBTEdit.getSaveStates();
 		save.load();
@@ -38,7 +35,7 @@ public class ClientProxy extends CommonProxy {
 	}
 
 	@Override
-	public File getMinecraftDirectory(){
+	public File getMinecraftDirectory() {
 		return FMLClientHandler.instance().getClient().mcDataDir;
 	}
 
@@ -62,8 +59,15 @@ public class ClientProxy extends CommonProxy {
 		});
 	}
 
+	@Override
+	public void sendMessage(EntityPlayer player, String message, EnumChatFormatting color) {
+		IChatComponent component = new ChatComponentText(message);
+		component.getChatStyle().setColor(color);
+		Minecraft.getMinecraft().thePlayer.addChatMessage(component);
+	}
+
 	@SubscribeEvent
-	public void renderWorldLast(RenderWorldLastEvent event){
+	public void renderWorldLast(RenderWorldLastEvent event) {
 		GuiScreen curScreen = Minecraft.getMinecraft().currentScreen;
 		if (curScreen instanceof GuiEditNBTTree){
 			GuiEditNBTTree screen = (GuiEditNBTTree)curScreen;

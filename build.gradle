@@ -20,7 +20,7 @@ repositories {
 
 apply plugin: 'net.minecraftforge.gradle.forge'
 
-version = "1.8.9-1.0"
+version = "1.8.9-2.0.0"
 group= "com.mcf.davidee.nbtedit"
 archivesBaseName = "NBTEdit"
 
