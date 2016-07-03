@@ -3,6 +3,8 @@ package com.mcf.davidee.nbtedit.forge;
 import com.mcf.davidee.nbtedit.NBTEdit;
 import com.mcf.davidee.nbtedit.gui.GuiEditNBTTree;
 import com.mcf.davidee.nbtedit.nbt.SaveStates;
+import com.mcf.davidee.nbtedit.packets.EntityRequestPacket;
+import com.mcf.davidee.nbtedit.packets.TileRequestPacket;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
@@ -11,6 +13,7 @@ import net.minecraft.client.renderer.RenderGlobal;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
@@ -19,12 +22,17 @@ import net.minecraft.world.World;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.FMLClientHandler;
+import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.InputEvent;
+import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
 import java.io.File;
 
 public class ClientProxy extends CommonProxy {
+
+	public static KeyBinding NBTEditKey;
 
 	@Override
 	public void registerInformation() {
@@ -32,6 +40,8 @@ public class ClientProxy extends CommonProxy {
 		SaveStates save = NBTEdit.getSaveStates();
 		save.load();
 		save.save();
+		NBTEditKey = new KeyBinding("NBTEdit Shortcut", Keyboard.KEY_NONE, "key.categories.misc");
+		ClientRegistry.registerKeyBinding(NBTEditKey);
 	}
 
 	@Override
@@ -85,6 +95,22 @@ public class ClientProxy extends CommonProxy {
 				if (b != null) {
 					b.setBlockBoundsBasedOnState(world, pos);
 					drawBoundingBox(event.context, event.partialTicks, b.getSelectedBoundingBox(world, pos));
+				}
+			}
+		}
+	}
+
+	@SubscribeEvent
+	public void onKey(InputEvent.KeyInputEvent event) {
+		if (NBTEditKey.isPressed()) {
+			MovingObjectPosition pos = Minecraft.getMinecraft().objectMouseOver;
+			if (pos != null) {
+				if (pos.entityHit != null) {
+					NBTEdit.NETWORK.INSTANCE.sendToServer(new EntityRequestPacket(pos.entityHit.getEntityId()));
+				} else if (pos.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK) {
+					NBTEdit.NETWORK.INSTANCE.sendToServer(new TileRequestPacket(pos.getBlockPos()));
+				} else {
+					this.sendMessage(null, "Error - No tile or entity selected", EnumChatFormatting.RED);
 				}
 			}
 		}
