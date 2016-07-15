@@ -9,7 +9,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.play.server.SPacketSetExperience;
 import net.minecraft.network.play.server.SPacketUpdateHealth;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraft.world.WorldSettings;
+import net.minecraft.world.GameType;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
@@ -54,7 +54,7 @@ public class EntityNBTPacket implements IMessage {
 						Entity entity = player.worldObj.getEntityByID(packet.entityID);
 						if (entity != null && NBTEdit.proxy.checkPermission(player)) {
 							try {
-								WorldSettings.GameType preGameType = player.interactionManager.getGameType();
+								GameType preGameType = player.interactionManager.getGameType();
 								entity.readFromNBT(packet.tag);
 								NBTEdit.log(Level.TRACE, player.getName() + " edited a tag -- Entity ID #" + packet.entityID);
 								NBTEdit.logTag(packet.tag);
@@ -63,7 +63,7 @@ public class EntityNBTPacket implements IMessage {
 									// receive entity edit events and provide feedback/send packets as necessary.
 
 									player.sendContainerToPlayer(player.inventoryContainer);
-									WorldSettings.GameType type = player.interactionManager.getGameType();
+									GameType type = player.interactionManager.getGameType();
 									if (preGameType != type)
 										player.setGameType(type);
 									player.connection.sendPacket(new SPacketUpdateHealth(player.getHealth(), player.getFoodStats().getFoodLevel(), player.getFoodStats().getSaturationLevel()));
