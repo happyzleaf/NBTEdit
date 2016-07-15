@@ -43,10 +43,10 @@ public class PacketHandler {
      */
     public void sendTile(final EntityPlayerMP player, final BlockPos pos) {
         if (NBTEdit.proxy.checkPermission(player)) {
-            player.getServerForPlayer().addScheduledTask(new Runnable() {
+            player.getServerWorld().addScheduledTask(new Runnable() {
                 @Override
                 public void run() {
-                    TileEntity te = player.getServerForPlayer().getTileEntity(pos);
+                    TileEntity te = player.getServerWorld().getTileEntity(pos);
                     if (te != null) {
                         NBTTagCompound tag = new NBTTagCompound();
                         te.writeToNBT(tag);
@@ -67,10 +67,10 @@ public class PacketHandler {
      */
     public void sendEntity(final EntityPlayerMP player, final int entityId) {
         if (NBTEdit.proxy.checkPermission(player)) {
-            player.getServerForPlayer().addScheduledTask(new Runnable() {
+            player.getServerWorld().addScheduledTask(new Runnable() {
                 @Override
                 public void run() {
-                    Entity entity = player.getServerForPlayer().getEntityByID(entityId);
+                    Entity entity = player.getServerWorld().getEntityByID(entityId);
                     if (entity instanceof EntityPlayer && entity != player) {
                         NBTEdit.proxy.sendMessage(player, "Error - You may not use NBTEdit on other Players", TextFormatting.RED);
                         NBTEdit.log(Level.WARN, player.getName() + " tried to use NBTEdit on another player, " + entity.getName());

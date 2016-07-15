@@ -78,7 +78,7 @@ public class ClientProxy extends CommonProxy {
 	@Override
 	public void sendMessage(EntityPlayer player, String message, TextFormatting color) {
 		ITextComponent component = new TextComponentString(message);
-		component.getChatStyle().setColor(color);
+		component.getStyle().setColor(color);
 		Minecraft.getMinecraft().thePlayer.addChatMessage(component);
 	}
 

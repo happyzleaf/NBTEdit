@@ -48,7 +48,7 @@ public class EntityNBTPacket implements IMessage {
 		public IMessage onMessage(final EntityNBTPacket packet, MessageContext ctx) {
 			if (ctx.side == Side.SERVER) {
 				final EntityPlayerMP player = ctx.getServerHandler().playerEntity;
-				player.getServerForPlayer().addScheduledTask(new Runnable() {
+				player.getServerWorld().addScheduledTask(new Runnable() {
 					@Override
 					public void run() {
 						Entity entity = player.worldObj.getEntityByID(packet.entityID);
@@ -66,8 +66,8 @@ public class EntityNBTPacket implements IMessage {
 									WorldSettings.GameType type = player.interactionManager.getGameType();
 									if (preGameType != type)
 										player.setGameType(type);
-									player.playerNetServerHandler.sendPacket(new SPacketUpdateHealth(player.getHealth(), player.getFoodStats().getFoodLevel(), player.getFoodStats().getSaturationLevel()));
-									player.playerNetServerHandler.sendPacket(new SPacketSetExperience(player.experience, player.experienceTotal, player.experienceLevel));
+									player.connection.sendPacket(new SPacketUpdateHealth(player.getHealth(), player.getFoodStats().getFoodLevel(), player.getFoodStats().getSaturationLevel()));
+									player.connection.sendPacket(new SPacketSetExperience(player.experience, player.experienceTotal, player.experienceLevel));
 									player.sendPlayerAbilities();
 								}
 								NBTEdit.proxy.sendMessage(player, "Your changes have been saved", TextFormatting.WHITE);

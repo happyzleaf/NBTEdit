@@ -30,7 +30,7 @@ public class CommonProxy {
 	public void sendMessage(EntityPlayer player, String message, TextFormatting color) {
 		if (player != null) {
 			ITextComponent component = new TextComponentString(message);
-			component.getChatStyle().setColor(color);
+			component.getStyle().setColor(color);
 			player.addChatMessage(component);
 		}
 	}
