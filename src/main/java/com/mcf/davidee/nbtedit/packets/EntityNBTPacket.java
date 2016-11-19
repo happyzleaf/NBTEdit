@@ -17,13 +17,20 @@ import net.minecraftforge.fml.relauncher.Side;
 import org.apache.logging.log4j.Level;
 
 public class EntityNBTPacket implements IMessage {
-	/** The id of the entity being edited. */
+	/**
+	 * The id of the entity being edited.
+	 */
 	protected int entityID;
-	/** The nbt data of the entity. */
+	/**
+	 * The nbt data of the entity.
+	 */
 	protected NBTTagCompound tag;
 
-	/** Required default constructor. */
-	public EntityNBTPacket() {}
+	/**
+	 * Required default constructor.
+	 */
+	public EntityNBTPacket() {
+	}
 
 	public EntityNBTPacket(int entityID, NBTTagCompound tag) {
 		this.entityID = entityID;
@@ -54,21 +61,27 @@ public class EntityNBTPacket implements IMessage {
 						Entity entity = player.worldObj.getEntityByID(packet.entityID);
 						if (entity != null && NBTEdit.proxy.checkPermission(player)) {
 							try {
-								GameType preGameType = player.interactionManager.getGameType();
+								GameType preGameType = null;
+								if (entity instanceof EntityPlayerMP)
+									preGameType = ((EntityPlayerMP) entity).interactionManager.getGameType();
 								entity.readFromNBT(packet.tag);
 								NBTEdit.log(Level.TRACE, player.getName() + " edited a tag -- Entity ID #" + packet.entityID);
 								NBTEdit.logTag(packet.tag);
-								if (entity == player) { //Update player info
+								if (entity instanceof EntityPlayerMP) {//Update player info
 									// This is fairly hacky. Consider swapping to an event driven system, where classes can register to
 									// receive entity edit events and provide feedback/send packets as necessary.
-
-									player.sendContainerToPlayer(player.inventoryContainer);
-									GameType type = player.interactionManager.getGameType();
-									if (preGameType != type)
-										player.setGameType(type);
-									player.connection.sendPacket(new SPacketUpdateHealth(player.getHealth(), player.getFoodStats().getFoodLevel(), player.getFoodStats().getSaturationLevel()));
-									player.connection.sendPacket(new SPacketSetExperience(player.experience, player.experienceTotal, player.experienceLevel));
-									player.sendPlayerAbilities();
+									EntityPlayerMP targetPlayer = (EntityPlayerMP) entity;
+									targetPlayer.sendContainerToPlayer(targetPlayer.inventoryContainer);
+									GameType type = targetPlayer.interactionManager.getGameType();
+									if (preGameType != type) {
+										targetPlayer.setGameType(type);
+									}
+									targetPlayer.connection.sendPacket(new SPacketUpdateHealth(targetPlayer.getHealth(),
+											targetPlayer.getFoodStats().getFoodLevel(), targetPlayer.getFoodStats().getSaturationLevel()));
+									targetPlayer.connection.sendPacket(new SPacketSetExperience(targetPlayer.experience,
+											targetPlayer.experienceTotal, targetPlayer.experienceLevel));
+									targetPlayer.sendPlayerAbilities();
+									targetPlayer.setPositionAndUpdate(targetPlayer.posX, targetPlayer.posY, targetPlayer.posZ);
 								}
 								NBTEdit.proxy.sendMessage(player, "Your changes have been saved", TextFormatting.WHITE);
 							} catch (Throwable t) {

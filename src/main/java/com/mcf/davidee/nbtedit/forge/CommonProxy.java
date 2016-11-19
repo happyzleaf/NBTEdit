@@ -12,19 +12,16 @@ import java.io.File;
 
 public class CommonProxy {
 	public void registerInformation() {
-		
 	}
 
 	public File getMinecraftDirectory() {
 		return new File(".");
 	}
-	
+
 	public void openEditGUI(int entityID, NBTTagCompound tag) {
-		
 	}
-	
+
 	public void openEditGUI(BlockPos pos, NBTTagCompound tag) {
-		
 	}
 
 	public void sendMessage(EntityPlayer player, String message, TextFormatting color) {

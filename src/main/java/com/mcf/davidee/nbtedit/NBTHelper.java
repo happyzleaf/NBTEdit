@@ -14,19 +14,19 @@ import java.util.List;
 import java.util.Map;
 
 public class NBTHelper {
-	
+
 	public static NBTTagCompound nbtRead(DataInputStream in) throws IOException {
 		return CompressedStreamTools.read(in);
 	}
-	
+
 	public static void nbtWrite(NBTTagCompound compound, DataOutput out) throws IOException {
 		CompressedStreamTools.write(compound, out);
 	}
-	
-	public static Map<String,NBTBase> getMap(NBTTagCompound tag){
+
+	public static Map<String, NBTBase> getMap(NBTTagCompound tag) {
 		return ReflectionHelper.getPrivateValue(NBTTagCompound.class, tag, 0);
 	}
-	
+
 	public static NBTBase getTagAt(NBTTagList tag, int index) {
 		List<NBTBase> list = ReflectionHelper.getPrivateValue(NBTTagList.class, tag, 1);
 		return list.get(index);

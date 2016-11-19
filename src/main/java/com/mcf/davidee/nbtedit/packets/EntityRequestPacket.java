@@ -9,11 +9,16 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import org.apache.logging.log4j.Level;
 
 public class EntityRequestPacket implements IMessage {
-	/** The id of the entity being requested. */
+	/**
+	 * The id of the entity being requested.
+	 */
 	private int entityID;
 
-	/** Required default constructor. */
-	public EntityRequestPacket() {}
+	/**
+	 * Required default constructor.
+	 */
+	public EntityRequestPacket() {
+	}
 
 	public EntityRequestPacket(int entityID) {
 		this.entityID = entityID;

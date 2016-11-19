@@ -16,27 +16,28 @@ import com.mcf.davidee.nbtedit.packets.TileNBTPacket;
 
 import java.io.IOException;
 
-public class GuiEditNBTTree extends GuiScreen{
+public class GuiEditNBTTree extends GuiScreen {
 
 	public final int entityOrX, y, z;
 	private boolean entity;
 	protected String screenTitle;
 	private GuiNBTTree guiTree;
 
-	public GuiEditNBTTree(int entity, NBTTagCompound tag){
-		this.entity =true;
+	public GuiEditNBTTree(int entity, NBTTagCompound tag) {
+		this.entity = true;
 		entityOrX = entity;
-		y =0;
-		z =0;
-		screenTitle =  "NBTEdit -- EntityId #" + entityOrX;
+		y = 0;
+		z = 0;
+		screenTitle = "NBTEdit -- EntityId #" + entityOrX;
 		guiTree = new GuiNBTTree(new NBTTree(tag));
 	}
-	public GuiEditNBTTree(BlockPos pos, NBTTagCompound tag){
+
+	public GuiEditNBTTree(BlockPos pos, NBTTagCompound tag) {
 		this.entity = false;
 		entityOrX = pos.getX();
 		this.y = pos.getY();
 		this.z = pos.getZ();
-		screenTitle =  "NBTEdit -- TileEntity at "+pos.getX()+","+pos.getY()+","+pos.getZ();
+		screenTitle = "NBTEdit -- TileEntity at " + pos.getX() + "," + pos.getY() + "," + pos.getZ();
 		guiTree = new GuiNBTTree(new NBTTree(tag));
 	}
 
@@ -44,11 +45,11 @@ public class GuiEditNBTTree extends GuiScreen{
 	public void initGui() {
 		Keyboard.enableRepeatEvents(true);
 		buttonList.clear();
-		guiTree.initGUI(width,height,height-35);
-		this.buttonList.add(new GuiButton(1, width / 4 - 100, this.height -27, "Save"));
-		this.buttonList.add(new GuiButton(0, width *3 / 4 -100, this.height -27, "Quit"));
+		guiTree.initGUI(width, height, height - 35);
+		this.buttonList.add(new GuiButton(1, width / 4 - 100, this.height - 27, "Save"));
+		this.buttonList.add(new GuiButton(0, width * 3 / 4 - 100, this.height - 27, "Quit"));
 	}
-	
+
 	public void onGuiClosed() {
 		Keyboard.enableRepeatEvents(false);
 	}
@@ -57,14 +58,13 @@ public class GuiEditNBTTree extends GuiScreen{
 		GuiEditNBT window = guiTree.getWindow();
 		if (window != null)
 			window.keyTyped(par1, key);
-		else{
-			if (key == 1){
+		else {
+			if (key == 1) {
 				if (guiTree.isEditingSlot())
 					guiTree.stopEditingSlot();
 				else
 					quitWithoutSaving();
-			}
-			else if (key == Keyboard.KEY_DELETE)
+			} else if (key == Keyboard.KEY_DELETE)
 				guiTree.deleteSelected();
 			else if (key == Keyboard.KEY_RETURN)
 				guiTree.editSelected();
@@ -76,45 +76,46 @@ public class GuiEditNBTTree extends GuiScreen{
 				guiTree.keyTyped(par1, key);
 		}
 	}
+
 	protected void mouseClicked(int x, int y, int t) throws IOException {
 		if (guiTree.getWindow() == null)
 			super.mouseClicked(x, y, t);
 		if (t == 0)
-			guiTree.mouseClicked(x,y);
+			guiTree.mouseClicked(x, y);
 		if (t == 1)
-			guiTree.rightClick(x,y);
+			guiTree.rightClick(x, y);
 	}
-	
+
 	public void handleMouseInput() throws IOException {
 		super.handleMouseInput();
 		int ofs = Mouse.getEventDWheel();
 
-		if (ofs != 0){
+		if (ofs != 0) {
 			guiTree.shift((ofs >= 1) ? 6 : -6);
 		}
 
 	}
-	
+
 	protected void actionPerformed(GuiButton b) {
-		if (b.enabled){
-			switch(b.id){
-			case 1:
-				quitWithSave();
-				break;
-			default:
-				quitWithoutSaving();
-				break;
+		if (b.enabled) {
+			switch (b.id) {
+				case 1:
+					quitWithSave();
+					break;
+				default:
+					quitWithoutSaving();
+					break;
 			}
 		}
 	}
-	
+
 	public void updateScreen() {
 		if (!mc.thePlayer.isEntityAlive())
 			quitWithoutSaving();
 		else
 			guiTree.updateScreen();
 	}
-	
+
 	private void quitWithSave() {
 		if (entity)
 			NBTEdit.NETWORK.INSTANCE.sendToServer(new EntityNBTPacket(entityOrX, guiTree.getNBTTree().toNBTTagCompound()));
@@ -124,29 +125,29 @@ public class GuiEditNBTTree extends GuiScreen{
 		mc.setIngameFocus();
 
 	}
-	
+
 	private void quitWithoutSaving() {
 		mc.displayGuiScreen(null);
 	}
-	
+
 	public void drawScreen(int x, int y, float par3) {
 		this.drawDefaultBackground();
-		guiTree.draw( x, y);
+		guiTree.draw(x, y);
 		this.drawCenteredString(mc.fontRendererObj, this.screenTitle, this.width / 2, 5, 16777215);
 		if (guiTree.getWindow() == null)
 			super.drawScreen(x, y, par3);
 		else
 			super.drawScreen(-1, -1, par3);
 	}
-	
+
 	public boolean doesGuiPauseGame() {
 		return true;
 	}
-	
+
 	public Entity getEntity() {
-		return entity ?  mc.theWorld.getEntityByID(entityOrX) : null;
+		return entity ? mc.theWorld.getEntityByID(entityOrX) : null;
 	}
-	
+
 	public boolean isTileEntity() {
 		return !entity;
 	}

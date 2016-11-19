@@ -16,13 +16,20 @@ import net.minecraftforge.fml.relauncher.Side;
 import org.apache.logging.log4j.Level;
 
 public class TileNBTPacket implements IMessage {
-	/** The block of the tileEntity. */
+	/**
+	 * The block of the tileEntity.
+	 */
 	protected BlockPos pos;
-	/** The nbt data of the tileEntity. */
+	/**
+	 * The nbt data of the tileEntity.
+	 */
 	protected NBTTagCompound tag;
 
-	/** Required default constructor. */
-	public TileNBTPacket() {}
+	/**
+	 * Required default constructor.
+	 */
+	public TileNBTPacket() {
+	}
 
 	public TileNBTPacket(BlockPos pos, NBTTagCompound tag) {
 		this.pos = pos;

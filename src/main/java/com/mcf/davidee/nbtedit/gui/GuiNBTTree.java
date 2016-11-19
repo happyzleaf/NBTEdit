@@ -49,7 +49,7 @@ public class GuiNBTTree extends Gui {
 	private GuiNBTButton[] buttons;
 
 	private final int X_GAP = 10, START_X = 10, START_Y = 30;
-	private final int Y_GAP = Minecraft.getMinecraft().fontRendererObj.FONT_HEIGHT+2;
+	private final int Y_GAP = Minecraft.getMinecraft().fontRendererObj.FONT_HEIGHT + 2;
 
 	private int y, yClick, bottom, width, height, heightDiff, offset;
 
@@ -58,19 +58,19 @@ public class GuiNBTTree extends Gui {
 
 	private GuiEditNBT window;
 
-	public Node<NamedNBT> getFocused(){
+	public Node<NamedNBT> getFocused() {
 		return focused;
 	}
 
-	public GuiSaveSlotButton getFocusedSaveSlot(){
+	public GuiSaveSlotButton getFocusedSaveSlot() {
 		return (focusedSlotIndex != -1) ? saves[focusedSlotIndex] : null;
 	}
 
-	public NBTTree getNBTTree(){
+	public NBTTree getNBTTree() {
 		return tree;
 	}
 
-	public GuiNBTTree(NBTTree tree){
+	public GuiNBTTree(NBTTree tree) {
 		this.tree = tree;
 		yClick = -1;
 		focusedSlotIndex = -1;
@@ -79,71 +79,67 @@ public class GuiNBTTree extends Gui {
 		saves = new GuiSaveSlotButton[7];
 	}
 
-	private int getHeightDifference(){
+	private int getHeightDifference() {
 		return getContentHeight() - (bottom - START_Y + 2);
 	}
 
-	private int getContentHeight(){
+	private int getContentHeight() {
 		return Y_GAP * nodes.size();
 	}
 
-	public GuiEditNBT getWindow(){
+	public GuiEditNBT getWindow() {
 		return window;
 	}
 
-	public void initGUI(int width, int height, int bottom){
+	public void initGUI(int width, int height, int bottom) {
 		this.width = width;
 		this.height = height;
 		this.bottom = bottom;
 		yClick = -1;
 		initGUI(false);
 		if (window != null)
-			window.initGUI((width-GuiEditNBT.WIDTH)/2, (height-GuiEditNBT.HEIGHT)/2);
+			window.initGUI((width - GuiEditNBT.WIDTH) / 2, (height - GuiEditNBT.HEIGHT) / 2);
 	}
 
-	public void updateScreen(){
+	public void updateScreen() {
 		if (window != null)
 			window.update();
 		if (focusedSlotIndex != -1)
 			saves[focusedSlotIndex].update();
 	}
 
-	private void setFocused(Node<NamedNBT> toFocus){
-		if (toFocus == null){
-			for (GuiNBTButton b: buttons)
+	private void setFocused(Node<NamedNBT> toFocus) {
+		if (toFocus == null) {
+			for (GuiNBTButton b : buttons)
 				b.setEnabled(false);
-		}
-		else if (toFocus.getObject().getNBT() instanceof NBTTagCompound){
-			for (GuiNBTButton b: buttons)
+		} else if (toFocus.getObject().getNBT() instanceof NBTTagCompound) {
+			for (GuiNBTButton b : buttons)
 				b.setEnabled(true);
 			buttons[12].setEnabled(toFocus != tree.getRoot());
 			buttons[11].setEnabled(toFocus.hasParent() && !(toFocus.getParent().getObject().getNBT() instanceof NBTTagList));
 			buttons[13].setEnabled(true);
 			buttons[14].setEnabled(toFocus != tree.getRoot());
 			buttons[15].setEnabled(NBTEdit.clipboard != null);
-		}
-		else if (toFocus.getObject().getNBT() instanceof NBTTagList){
-			if (toFocus.hasChildren()){
+		} else if (toFocus.getObject().getNBT() instanceof NBTTagList) {
+			if (toFocus.hasChildren()) {
 				byte type = toFocus.getChildren().get(0).getObject().getNBT().getId();
-				for (GuiNBTButton b: buttons)
+				for (GuiNBTButton b : buttons)
 					b.setEnabled(false);
-				buttons[type-1].setEnabled(true);
+				buttons[type - 1].setEnabled(true);
 				buttons[12].setEnabled(true);
-				buttons[11].setEnabled(! (toFocus.getParent().getObject().getNBT() instanceof NBTTagList));
+				buttons[11].setEnabled(!(toFocus.getParent().getObject().getNBT() instanceof NBTTagList));
 				buttons[13].setEnabled(true);
 				buttons[14].setEnabled(true);
 				buttons[15].setEnabled(NBTEdit.clipboard != null && NBTEdit.clipboard.getNBT().getId() == type);
-			}
-			else
-				for (GuiNBTButton b: buttons)
+			} else
+				for (GuiNBTButton b : buttons)
 					b.setEnabled(true);
-			buttons[11].setEnabled(! (toFocus.getParent().getObject().getNBT() instanceof NBTTagList));
+			buttons[11].setEnabled(!(toFocus.getParent().getObject().getNBT() instanceof NBTTagList));
 			buttons[13].setEnabled(true);
 			buttons[14].setEnabled(true);
 			buttons[15].setEnabled(NBTEdit.clipboard != null);
-		}
-		else{
-			for (GuiNBTButton b: buttons)
+		} else {
+			for (GuiNBTButton b : buttons)
 				b.setEnabled(false);
 			buttons[12].setEnabled(true);
 			buttons[11].setEnabled(true);
@@ -153,76 +149,77 @@ public class GuiNBTTree extends Gui {
 		}
 
 		focused = toFocus;
-		if (focused != null && focusedSlotIndex != -1){
+		if (focused != null && focusedSlotIndex != -1) {
 			stopEditingSlot();
 		}
 	}
 
-	public void initGUI(){
+	public void initGUI() {
 		initGUI(false);
 	}
 
 	public void initGUI(boolean shiftToFocused) {
 		y = START_Y;
 		nodes.clear();
-		addNodes(tree.getRoot(),  START_X);
+		addNodes(tree.getRoot(), START_X);
 		addButtons();
 		addSaveSlotButtons();
-		if (focused != null){
-			if (!checkValidFocus(focused)){
+		if (focused != null) {
+			if (!checkValidFocus(focused)) {
 				setFocused(null);
 			}
 		}
-		if (focusedSlotIndex != -1){
+		if (focusedSlotIndex != -1) {
 			saves[focusedSlotIndex].startEditing();
 		}
 		heightDiff = getHeightDifference();
 		if (heightDiff <= 0)
 			offset = 0;
-		else{
+		else {
 			if (offset < -heightDiff)
 				offset = -heightDiff;
 			if (offset > 0)
 				offset = 0;
 			for (GuiNBTNode node : nodes)
 				node.shift(offset);
-			if (shiftToFocused && focused != null){
+			if (shiftToFocused && focused != null) {
 				shiftTo(focused);
 			}
 		}
 	}
-	private void addSaveSlotButtons(){
+
+	private void addSaveSlotButtons() {
 		SaveStates saveStates = NBTEdit.getSaveStates();
-		for (int i =0; i < 7; ++i)
-			saves[i] = new GuiSaveSlotButton(saveStates.getSaveState(i),width-24,31+i*25);
+		for (int i = 0; i < 7; ++i)
+			saves[i] = new GuiSaveSlotButton(saveStates.getSaveState(i), width - 24, 31 + i * 25);
 	}
 
-	private void addButtons(){
+	private void addButtons() {
 		int x = 18, y = 4;
 
-		for (byte i = 14; i < 17; ++i){
-			buttons[i-1] = new GuiNBTButton(i,x,y);
-			x+=15;
+		for (byte i = 14; i < 17; ++i) {
+			buttons[i - 1] = new GuiNBTButton(i, x, y);
+			x += 15;
 		}
 
 		x += 30;
-		for (byte i = 12; i < 14; ++i){
-			buttons[i-1] = new GuiNBTButton(i,x,y);
-			x +=15;
+		for (byte i = 12; i < 14; ++i) {
+			buttons[i - 1] = new GuiNBTButton(i, x, y);
+			x += 15;
 		}
 
 		x = 18;
 		y = 17;
-		for (byte i = 1; i < 12; ++i){
-			buttons[i-1] = new GuiNBTButton(i,x,y);
+		for (byte i = 1; i < 12; ++i) {
+			buttons[i - 1] = new GuiNBTButton(i, x, y);
 			x += 9;
 		}
 	}
 
 
 	private boolean checkValidFocus(Node<NamedNBT> fc) {
-		for (GuiNBTNode node : nodes){ //Check all nodes
-			if (node.getNode() == fc){
+		for (GuiNBTNode node : nodes) { //Check all nodes
+			if (node.getNode() == fc) {
 				setFocused(fc);
 				return true;
 			}
@@ -231,29 +228,29 @@ public class GuiNBTTree extends Gui {
 	}
 
 	private void addNodes(Node<NamedNBT> node, int x) {
-		nodes.add(new GuiNBTNode(this, node, x, y)); 
+		nodes.add(new GuiNBTNode(this, node, x, y));
 		x += X_GAP;
 		y += Y_GAP;
-		
+
 		if (node.shouldDrawChildren())
 			for (Node<NamedNBT> child : node.getChildren())
-				addNodes(child,x);
+				addNodes(child, x);
 	}
 
-	public void draw(int mx, int my){
+	public void draw(int mx, int my) {
 		int cmx = mx, cmy = my;
-		if (window != null){
+		if (window != null) {
 			cmx = -1;
 			cmy = -1;
 		}
-		for (GuiNBTNode node : nodes){
-			if (node.shouldDraw(START_Y-1,bottom))
+		for (GuiNBTNode node : nodes) {
+			if (node.shouldDraw(START_Y - 1, bottom))
 				node.draw(cmx, cmy);
 		}
-		overlayBackground(0, START_Y-1, 255, 255);
+		overlayBackground(0, START_Y - 1, 255, 255);
 		overlayBackground(bottom, height, 255, 255);
 		for (GuiNBTButton but : buttons)
-			but.draw(cmx,cmy);
+			but.draw(cmx, cmy);
 		for (GuiSaveSlotButton but : saves)
 			but.draw(cmx, cmy);
 		drawScrollBar(cmx, cmy);
@@ -261,65 +258,57 @@ public class GuiNBTTree extends Gui {
 			window.draw(mx, my);
 	}
 
-	private void drawScrollBar(int mx, int my){
-		if (heightDiff > 0){
-			if (Mouse.isButtonDown(0)){
-				if (yClick == -1){
-					if (mx >= width-20 && mx < width && my >= START_Y -1 && my < bottom){
+	private void drawScrollBar(int mx, int my) {
+		if (heightDiff > 0) {
+			if (Mouse.isButtonDown(0)) {
+				if (yClick == -1) {
+					if (mx >= width - 20 && mx < width && my >= START_Y - 1 && my < bottom) {
 						yClick = my;
 					}
-				}
-				else {
+				} else {
 					float scrollMultiplier = 1.0F;
 					int height = getHeightDifference();
 
-					if (height < 1)
-					{
+					if (height < 1) {
 						height = 1;
 					}
-					int length = (bottom - (START_Y-1)) * (bottom - (START_Y-1)) / getContentHeight();
+					int length = (bottom - (START_Y - 1)) * (bottom - (START_Y - 1)) / getContentHeight();
 					if (length < 32)
 						length = 32;
-					if (length > bottom - (START_Y-1) - 8)
-						length = bottom - (START_Y-1) - 8;
+					if (length > bottom - (START_Y - 1) - 8)
+						length = bottom - (START_Y - 1) - 8;
 
-					scrollMultiplier /= (float)(this.bottom - (START_Y - 1) - length) / (float) height;
+					scrollMultiplier /= (float) (this.bottom - (START_Y - 1) - length) / (float) height;
 
 
-
-					shift( (int)((yClick-my)  * scrollMultiplier));
+					shift((int) ((yClick - my) * scrollMultiplier));
 					yClick = my;
 				}
-			}
-			else
+			} else
 				yClick = -1;
 
 
-			drawRect(width-20,START_Y - 1, width, bottom, Integer.MIN_VALUE);
+			drawRect(width - 20, START_Y - 1, width, bottom, Integer.MIN_VALUE);
 
 
-			int length = (bottom - (START_Y-1)) * (bottom - (START_Y-1)) / getContentHeight();
+			int length = (bottom - (START_Y - 1)) * (bottom - (START_Y - 1)) / getContentHeight();
 			if (length < 32)
 				length = 32;
-			if (length > bottom - (START_Y-1) - 8)
-				length = bottom - (START_Y-1) - 8;
-			int y = -offset * (this.bottom - (START_Y-1) - length) / heightDiff + (START_Y-1);
+			if (length > bottom - (START_Y - 1) - 8)
+				length = bottom - (START_Y - 1) - 8;
+			int y = -offset * (this.bottom - (START_Y - 1) - length) / heightDiff + (START_Y - 1);
 
-			if (y < START_Y-1)
-				y = START_Y-1;
-
-
-
+			if (y < START_Y - 1)
+				y = START_Y - 1;
 
 
 			//	this.drawGradientRect(width-20,y,width,y+length,8421504, 12632256);
 			//drawRect(width-20,y,width,y+length,0x80ffffff);
-			drawGradientRect(width-20,y,width,y+length,0x80ffffff,0x80333333);
+			drawGradientRect(width - 20, y, width, y + length, 0x80ffffff, 0x80333333);
 		}
 	}
 
-	protected void overlayBackground(int par1, int par2, int par3, int par4)
-	{
+	protected void overlayBackground(int par1, int par2, int par3, int par4) {
 		Tessellator tessellator = Tessellator.getInstance();
 		VertexBuffer worldRenderer = tessellator.getBuffer();
 		mc.renderEngine.bindTexture(OPTIONS_BACKGROUND);
@@ -328,49 +317,49 @@ public class GuiNBTTree extends Gui {
 		worldRenderer.begin(7, DefaultVertexFormats.POSITION_COLOR);
 		Color color = new Color(4210752);
 		worldRenderer.color(color.getRed(), color.getGreen(), color.getBlue(), par4);
-		worldRenderer.pos(0.0D, (double)par2, 0.0D).tex(0.0D, (double)((float)par2 / var6));
-		worldRenderer.pos((double)this.width, (double)par2, 0.0D).tex ((double)((float)this.width / var6), (double)((float)par2 / var6));
+		worldRenderer.pos(0.0D, (double) par2, 0.0D).tex(0.0D, (double) ((float) par2 / var6));
+		worldRenderer.pos((double) this.width, (double) par2, 0.0D).tex((double) ((float) this.width / var6), (double) ((float) par2 / var6));
 		worldRenderer.color(color.getRed(), color.getGreen(), color.getBlue(), par3);
-		worldRenderer.pos((double)this.width, (double)par1, 0.0D).tex ((double)((float)this.width / var6), (double)((float)par1 / var6));
-		worldRenderer.pos(0.0D, (double)par1, 0.0D).tex(0.0D, (double)((float)par1 / var6));
+		worldRenderer.pos((double) this.width, (double) par1, 0.0D).tex((double) ((float) this.width / var6), (double) ((float) par1 / var6));
+		worldRenderer.pos(0.0D, (double) par1, 0.0D).tex(0.0D, (double) ((float) par1 / var6));
 		tessellator.draw();
 	}
 
 	public void mouseClicked(int mx, int my) {
-		if (window == null){
+		if (window == null) {
 			boolean reInit = false;
 
-			for (GuiNBTNode node : nodes){
-				if (node.hideShowClicked(mx, my)){ // Check hide/show children buttons
+			for (GuiNBTNode node : nodes) {
+				if (node.hideShowClicked(mx, my)) { // Check hide/show children buttons
 					reInit = true;
 					if (node.shouldDrawChildren())
-						offset =  (START_Y+1) - (node.y) + offset;
+						offset = (START_Y + 1) - (node.y) + offset;
 					break;
 				}
 			}
-			if (!reInit){
-				for (GuiNBTButton button : buttons){ //Check top buttons
-					if (button.inBounds(mx, my)){
+			if (!reInit) {
+				for (GuiNBTButton button : buttons) { //Check top buttons
+					if (button.inBounds(mx, my)) {
 						buttonClicked(button);
 						return;
 					}
 				}
-				for (GuiSaveSlotButton button : saves){
-					if (button.inBoundsOfX(mx, my)){
+				for (GuiSaveSlotButton button : saves) {
+					if (button.inBoundsOfX(mx, my)) {
 						button.reset();
 						NBTEdit.getSaveStates().save();
 						mc.getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1.0F));
 						return;
 					}
-					if (button.inBounds(mx, my)){
+					if (button.inBounds(mx, my)) {
 						saveButtonClicked(button);
 						return;
 					}
 				}
-				if (my >= START_Y && mx <= width-175){ //Check actual nodes, remove focus if nothing clicked
+				if (my >= START_Y && mx <= width - 175) { //Check actual nodes, remove focus if nothing clicked
 					Node<NamedNBT> newFocus = null;
-					for (GuiNBTNode node : nodes){
-						if (node.clicked(mx, my)){
+					for (GuiNBTNode node : nodes) {
+						if (node.clicked(mx, my)) {
 							newFocus = node.getNode();
 							break;
 						}
@@ -379,60 +368,52 @@ public class GuiNBTTree extends Gui {
 						stopEditingSlot();
 					setFocused(newFocus);
 				}
-			}
-			else
+			} else
 				initGUI();
-		}
-		else 
+		} else
 			window.click(mx, my);
 	}
 
-	private void saveButtonClicked(GuiSaveSlotButton button){
-		if (button.save.tag.hasNoTags()){ //Copy into save slot
+	private void saveButtonClicked(GuiSaveSlotButton button) {
+		if (button.save.tag.hasNoTags()) { //Copy into save slot
 			Node<NamedNBT> obj = (focused == null) ? tree.getRoot() : focused;
 			NBTBase base = obj.getObject().getNBT();
 			String name = obj.getObject().getName();
-			if (base instanceof NBTTagList){
+			if (base instanceof NBTTagList) {
 				NBTTagList list = new NBTTagList();
 				tree.addChildrenToList(obj, list);
 				button.save.tag.setTag(name, list);
-			}
-			else if (base instanceof NBTTagCompound){
+			} else if (base instanceof NBTTagCompound) {
 				NBTTagCompound compound = new NBTTagCompound();
 				tree.addChildrenToTag(obj, compound);
 				button.save.tag.setTag(name, compound);
-			}
-
-			else
+			} else
 				button.save.tag.setTag(name, base.copy());
 			button.saved();
 			NBTEdit.getSaveStates().save();
 			mc.getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1.0F));
-		}
-		else{ //Paste into
+		} else { //Paste into
 			Map<String, NBTBase> nbtMap = NBTHelper.getMap(button.save.tag);
-			if (nbtMap.isEmpty()){
-				NBTEdit.log(Level.WARN, "Unable to copy from save \"" + button.save.name +"\".");
+			if (nbtMap.isEmpty()) {
+				NBTEdit.log(Level.WARN, "Unable to copy from save \"" + button.save.name + "\".");
 				NBTEdit.log(Level.WARN, "The save is invalid - a valid save must only contain 1 core NBTBase");
-			}
-			else{
+			} else {
 				if (focused == null)
 					setFocused(tree.getRoot());
-				
-				Entry<String, NBTBase> firstEntry =  nbtMap.entrySet().iterator().next();
+
+				Entry<String, NBTBase> firstEntry = nbtMap.entrySet().iterator().next();
 				assert firstEntry != null;
 				String name = firstEntry.getKey();
 				NBTBase nbt = firstEntry.getValue().copy();
-				if (focused == tree.getRoot() && nbt instanceof NBTTagCompound && name.equals("ROOT")){
+				if (focused == tree.getRoot() && nbt instanceof NBTTagCompound && name.equals("ROOT")) {
 					setFocused(null);
-					tree = new NBTTree((NBTTagCompound)nbt);
+					tree = new NBTTree((NBTTagCompound) nbt);
 					initGUI();
 					mc.getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1.0F));
-				}
-				else if (canAddToParent(focused.getObject().getNBT(), nbt)){
+				} else if (canAddToParent(focused.getObject().getNBT(), nbt)) {
 					focused.setDrawChildren(true);
-					for (Iterator<Node<NamedNBT>> it = focused.getChildren().iterator(); it.hasNext();){ //Replace object with same name
-						if (it.next().getObject().getName().equals(name)){
+					for (Iterator<Node<NamedNBT>> it = focused.getChildren().iterator(); it.hasNext(); ) { //Replace object with same name
+						if (it.next().getObject().getName().equals(name)) {
 							it.remove();
 							break;
 						}
@@ -448,7 +429,7 @@ public class GuiNBTTree extends Gui {
 		}
 	}
 
-	private void buttonClicked(GuiNBTButton button){
+	private void buttonClicked(GuiNBTButton button) {
 		if (button.getId() == 16)
 			paste();
 		else if (button.getId() == 15)
@@ -459,27 +440,25 @@ public class GuiNBTTree extends Gui {
 			deleteSelected();
 		else if (button.getId() == 12)
 			edit();
-		else if (focused != null){
+		else if (focused != null) {
 			focused.setDrawChildren(true);
 			List<Node<NamedNBT>> children = focused.getChildren();
 			String type = NBTStringHelper.getButtonName(button.getId());
 
-			if (focused.getObject().getNBT() instanceof NBTTagList){
+			if (focused.getObject().getNBT() instanceof NBTTagList) {
 				NBTBase nbt = NBTStringHelper.newTag(button.getId());
-				if (nbt != null){
-					Node<NamedNBT> newNode = new Node<>(focused, new NamedNBT("",nbt));
+				if (nbt != null) {
+					Node<NamedNBT> newNode = new Node<>(focused, new NamedNBT("", nbt));
 					children.add(newNode);
 					setFocused(newNode);
 				}
-			}
-			else if (children.size() == 0){
+			} else if (children.size() == 0) {
 				setFocused(insert(type + "1", button.getId()));
-			}
-			else{
-				for (int i =1; i <= children.size()+1; ++i){
+			} else {
+				for (int i = 1; i <= children.size() + 1; ++i) {
 					String name = type + i;
-					if (validName(name,children)){
-						setFocused(insert(name,button.getId()));
+					if (validName(name, children)) {
+						setFocused(insert(name, button.getId()));
 						break;
 					}
 				}
@@ -488,17 +467,17 @@ public class GuiNBTTree extends Gui {
 		}
 	}
 
-	private boolean validName(String name, List<Node<NamedNBT>> list){
+	private boolean validName(String name, List<Node<NamedNBT>> list) {
 		for (Node<NamedNBT> node : list)
 			if (node.getObject().getName().equals(name))
 				return false;
 		return true;
 	}
 
-	private Node<NamedNBT> insert(NamedNBT nbt){
+	private Node<NamedNBT> insert(NamedNBT nbt) {
 		Node<NamedNBT> newNode = new Node<>(focused, nbt);
 
-		if (focused.hasChildren()){
+		if (focused.hasChildren()) {
 			List<Node<NamedNBT>> children = focused.getChildren();
 
 			boolean added = false;
@@ -511,13 +490,12 @@ public class GuiNBTTree extends Gui {
 			}
 			if (!added)
 				children.add(newNode);
-		}
-		else
+		} else
 			focused.addChild(newNode);
 		return newNode;
 	}
 
-	private Node<NamedNBT> insert(String name, byte type){
+	private Node<NamedNBT> insert(String name, byte type) {
 		NBTBase nbt = NBTStringHelper.newTag(type);
 		if (nbt != null)
 			return insert(new NamedNBT(name, nbt));
@@ -525,8 +503,8 @@ public class GuiNBTTree extends Gui {
 	}
 
 	public void deleteSelected() {
-		if (focused != null){
-			if (tree.delete(focused)){
+		if (focused != null) {
+			if (tree.delete(focused)) {
 				Node<NamedNBT> oldFocused = focused;
 				shiftFocus(true);
 				if (focused == oldFocused)
@@ -538,22 +516,20 @@ public class GuiNBTTree extends Gui {
 	}
 
 	public void editSelected() {
-		if (focused != null){
+		if (focused != null) {
 			NBTBase base = focused.getObject().getNBT();
-			if (focused.hasChildren() &&  (base instanceof NBTTagCompound || base instanceof NBTTagList)){
+			if (focused.hasChildren() && (base instanceof NBTTagCompound || base instanceof NBTTagList)) {
 				focused.setDrawChildren(!focused.shouldDrawChildren());
 				int index;
-				
-				if(focused.shouldDrawChildren() && (index = indexOf(focused)) != -1)
-					offset =  (START_Y+1) - nodes.get(index).y + offset;
-				
+
+				if (focused.shouldDrawChildren() && (index = indexOf(focused)) != -1)
+					offset = (START_Y + 1) - nodes.get(index).y + offset;
+
 				initGUI();
-			}
-			else if (buttons[11].isEnabled()){
+			} else if (buttons[11].isEnabled()) {
 				edit();
 			}
-		}
-		else if (focusedSlotIndex != -1){
+		} else if (focusedSlotIndex != -1) {
 			stopEditingSlot();
 		}
 	}
@@ -561,7 +537,7 @@ public class GuiNBTTree extends Gui {
 	private boolean canAddToParent(NBTBase parent, NBTBase child) {
 		if (parent instanceof NBTTagCompound)
 			return true;
-		if (parent instanceof NBTTagList){
+		if (parent instanceof NBTTagList) {
 			NBTTagList list = (NBTTagList) parent;
 			return list.tagCount() == 0 || list.getTagType() == child.getId();
 		}
@@ -571,27 +547,26 @@ public class GuiNBTTree extends Gui {
 	private boolean canPaste() {
 		return NBTEdit.clipboard != null && focused != null && canAddToParent(focused.getObject().getNBT(), NBTEdit.clipboard.getNBT());
 	}
-	
+
 	private void paste() {
-		if (NBTEdit.clipboard != null){
+		if (NBTEdit.clipboard != null) {
 			focused.setDrawChildren(true);
-			
+
 			NamedNBT namedNBT = NBTEdit.clipboard.copy();
-			if (focused.getObject().getNBT() instanceof NBTTagList){
+			if (focused.getObject().getNBT() instanceof NBTTagList) {
 				namedNBT.setName("");
 				Node<NamedNBT> node = new Node<>(focused, namedNBT);
 				focused.addChild(node);
 				tree.addChildrenToTree(node);
 				tree.sort(node);
 				setFocused(node);
-			}
-			else{
+			} else {
 				String name = namedNBT.getName();
 				List<Node<NamedNBT>> children = focused.getChildren();
-				if (!validName(name, children)){
-					for (int i = 1; i <= children.size() + 1; ++i){
+				if (!validName(name, children)) {
+					for (int i = 1; i <= children.size() + 1; ++i) {
 						String n = name + "(" + i + ")";
-						if (validName(n,children)){
+						if (validName(n, children)) {
 							namedNBT.setName(n);
 							break;
 						}
@@ -606,75 +581,74 @@ public class GuiNBTTree extends Gui {
 			initGUI(true);
 		}
 	}
-	
-	private void copy(){
-		if (focused != null){
+
+	private void copy() {
+		if (focused != null) {
 			NamedNBT namedNBT = focused.getObject();
-			if (namedNBT.getNBT() instanceof NBTTagList){
+			if (namedNBT.getNBT() instanceof NBTTagList) {
 				NBTTagList list = new NBTTagList();
 				tree.addChildrenToList(focused, list);
 				NBTEdit.clipboard = new NamedNBT(namedNBT.getName(), list);
-			}
-			else if (namedNBT.getNBT() instanceof NBTTagCompound){
+			} else if (namedNBT.getNBT() instanceof NBTTagCompound) {
 				NBTTagCompound compound = new NBTTagCompound();
 				tree.addChildrenToTag(focused, compound);
 				NBTEdit.clipboard = new NamedNBT(namedNBT.getName(), compound);
-			}
-			else
+			} else
 				NBTEdit.clipboard = focused.getObject().copy();
 			setFocused(focused);
 		}
 	}
 
-	private void cut(){
+	private void cut() {
 		copy();
 		deleteSelected();
 	}
 
-	private void edit(){
+	private void edit() {
 		NBTBase base = focused.getObject().getNBT();
 		NBTBase parent = focused.getParent().getObject().getNBT();
 		window = new GuiEditNBT(this, focused, !(parent instanceof NBTTagList), !(base instanceof NBTTagCompound || base instanceof NBTTagList));
-		window.initGUI((width-GuiEditNBT.WIDTH)/2, (height-GuiEditNBT.HEIGHT)/2);
+		window.initGUI((width - GuiEditNBT.WIDTH) / 2, (height - GuiEditNBT.HEIGHT) / 2);
 	}
 
-	public void nodeEdited(Node<NamedNBT> node){
+	public void nodeEdited(Node<NamedNBT> node) {
 		Node<NamedNBT> parent = node.getParent();
 		Collections.sort(parent.getChildren(), NBTEdit.SORTER);
 		initGUI(true);
 	}
 
-	public void arrowKeyPressed(boolean up){
+	public void arrowKeyPressed(boolean up) {
 		if (focused == null)
 			shift((up) ? Y_GAP : -Y_GAP);
 		else
 			shiftFocus(up);
 	}
 
-	private int indexOf(Node<NamedNBT> node){
-		for (int i =0; i < nodes.size(); ++i){
-			if (nodes.get(i).getNode() == node){
+	private int indexOf(Node<NamedNBT> node) {
+		for (int i = 0; i < nodes.size(); ++i) {
+			if (nodes.get(i).getNode() == node) {
 				return i;
 			}
 		}
 		return -1;
 	}
-	
-	private void shiftFocus(boolean up){
+
+	private void shiftFocus(boolean up) {
 		int index = indexOf(focused);
-		if (index != -1){
+		if (index != -1) {
 			index += (up) ? -1 : 1;
-			if (index >= 0 && index < nodes.size()){
+			if (index >= 0 && index < nodes.size()) {
 				setFocused(nodes.get(index).getNode());
 				shift((up) ? Y_GAP : -Y_GAP);
 			}
 		}
 	}
-	private void shiftTo(Node<NamedNBT> node){
+
+	private void shiftTo(Node<NamedNBT> node) {
 		int index = indexOf(node);
-		if (index != -1){
+		if (index != -1) {
 			GuiNBTNode gui = nodes.get(index);
-			shift((bottom+START_Y+1)/2 - (gui.y+gui.height));
+			shift((bottom + START_Y + 1) / 2 - (gui.y + gui.height));
 		}
 	}
 
@@ -687,29 +661,28 @@ public class GuiNBTTree extends Gui {
 		if (dif < -heightDiff)
 			dif = -heightDiff;
 		for (GuiNBTNode node : nodes)
-			node.shift(dif-offset);
-		offset = dif; 
+			node.shift(dif - offset);
+		offset = dif;
 	}
 
 	public void closeWindow() {
 		window = null;
 	}
 
-	public boolean isEditingSlot(){
+	public boolean isEditingSlot() {
 		return focusedSlotIndex != -1;
 	}
 
-	public void stopEditingSlot(){
+	public void stopEditingSlot() {
 		saves[focusedSlotIndex].stopEditing();
 		NBTEdit.getSaveStates().save();
 		focusedSlotIndex = -1;
 	}
 
 	public void keyTyped(char ch, int key) {
-		if (focusedSlotIndex != -1){
+		if (focusedSlotIndex != -1) {
 			saves[focusedSlotIndex].keyTyped(ch, key);
-		}
-		else{
+		} else {
 			if (key == Keyboard.KEY_C && GuiControls.isCtrlKeyDown())
 				copy();
 			if (key == Keyboard.KEY_V && GuiControls.isCtrlKeyDown() && canPaste())
@@ -720,16 +693,15 @@ public class GuiNBTTree extends Gui {
 	}
 
 	public void rightClick(int mx, int my) {
-		for (int i = 0; i < 7; ++i){
-			if (saves[i].inBounds(mx, my)){
+		for (int i = 0; i < 7; ++i) {
+			if (saves[i].inBounds(mx, my)) {
 				setFocused(null);
-				if (focusedSlotIndex != -1){
-					if (focusedSlotIndex != i){
+				if (focusedSlotIndex != -1) {
+					if (focusedSlotIndex != i) {
 						saves[focusedSlotIndex].stopEditing();
 						NBTEdit.getSaveStates().save();
-					}
-					else //Already editing the correct one!
-						return; 
+					} else //Already editing the correct one!
+						return;
 				}
 				saves[i].startEditing();
 				focusedSlotIndex = i;
@@ -738,8 +710,7 @@ public class GuiNBTTree extends Gui {
 		}
 	}
 
-	private void putColor(VertexBuffer renderer, int argb, int p_178988_2_)
-	{
+	private void putColor(VertexBuffer renderer, int argb, int p_178988_2_) {
 		int i = renderer.getColorIndex(p_178988_2_);
 		int j = argb >> 16 & 255;
 		int k = argb >> 8 & 255;

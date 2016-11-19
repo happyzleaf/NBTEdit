@@ -10,12 +10,17 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import org.apache.logging.log4j.Level;
 
 public class TileRequestPacket implements IMessage {
-	/** The position of the tileEntity requested. */
+	/**
+	 * The position of the tileEntity requested.
+	 */
 	private BlockPos pos;
 
-	/** Required default constructor. */
-	public TileRequestPacket() {}
-	
+	/**
+	 * Required default constructor.
+	 */
+	public TileRequestPacket() {
+	}
+
 	public TileRequestPacket(BlockPos pos) {
 		this.pos = pos;
 	}

@@ -64,7 +64,7 @@ public class ClientProxy extends CommonProxy {
 			}
 		});
 	}
-	
+
 	@Override
 	public void openEditGUI(final BlockPos pos, final NBTTagCompound tag) {
 		Minecraft.getMinecraft().addScheduledTask(new Runnable() {
@@ -85,13 +85,13 @@ public class ClientProxy extends CommonProxy {
 	@SubscribeEvent
 	public void renderWorldLast(RenderWorldLastEvent event) {
 		GuiScreen curScreen = Minecraft.getMinecraft().currentScreen;
-		if (curScreen instanceof GuiEditNBTTree){
-			GuiEditNBTTree screen = (GuiEditNBTTree)curScreen;
+		if (curScreen instanceof GuiEditNBTTree) {
+			GuiEditNBTTree screen = (GuiEditNBTTree) curScreen;
 			Entity e = screen.getEntity();
-			
+
 			if (e != null && e.isEntityAlive())
 				drawBoundingBox(event.getContext(), event.getPartialTicks(), e.getEntityBoundingBox());
-			else if (screen.isTileEntity()){
+			else if (screen.isTileEntity()) {
 				int x = screen.getBlockX();
 				int y = screen.y;
 				int z = screen.z;
@@ -129,9 +129,9 @@ public class ClientProxy extends CommonProxy {
 
 		Entity player = Minecraft.getMinecraft().getRenderViewEntity();
 
-		double var8 = player.lastTickPosX + (player.posX - player.lastTickPosX) * (double)f;
-		double var10 = player.lastTickPosY + (player.posY - player.lastTickPosY) * (double)f;
-		double var12 = player.lastTickPosZ + (player.posZ - player.lastTickPosZ) * (double)f;
+		double var8 = player.lastTickPosX + (player.posX - player.lastTickPosX) * (double) f;
+		double var10 = player.lastTickPosY + (player.posY - player.lastTickPosY) * (double) f;
+		double var12 = player.lastTickPosZ + (player.posZ - player.lastTickPosZ) * (double) f;
 
 		aabb = aabb.addCoord(-var8, -var10, -var12);
 
