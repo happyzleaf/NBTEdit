@@ -79,7 +79,7 @@ public class ClientProxy extends CommonProxy {
 	public void sendMessage(EntityPlayer player, String message, TextFormatting color) {
 		ITextComponent component = new TextComponentString(message);
 		component.getStyle().setColor(color);
-		Minecraft.getMinecraft().thePlayer.addChatMessage(component);
+		Minecraft.getMinecraft().player.sendMessage(component);
 	}
 
 	@SubscribeEvent
@@ -95,7 +95,7 @@ public class ClientProxy extends CommonProxy {
 				int x = screen.getBlockX();
 				int y = screen.y;
 				int z = screen.z;
-				World world = Minecraft.getMinecraft().theWorld;
+				World world = Minecraft.getMinecraft().world;
 				BlockPos pos = new BlockPos(x, y, z);
 				IBlockState state = world.getBlockState(pos);
 				Block block = world.getBlockState(pos).getBlock();

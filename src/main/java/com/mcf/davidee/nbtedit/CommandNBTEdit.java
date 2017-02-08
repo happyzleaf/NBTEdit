@@ -14,12 +14,12 @@ import org.apache.logging.log4j.Level;
 public class CommandNBTEdit extends CommandBase {
 
 	@Override
-	public String getCommandName() {
+	public String getName() {
 		return "nbtedit";
 	}
 
 	@Override
-	public String getCommandUsage(ICommandSender sender) {
+	public String getUsage(ICommandSender sender) {
 		return "/nbtedit OR /nbtedit <EntityId> OR /nbtedit <TileX> <TileY> <TileZ>";
 	}
 

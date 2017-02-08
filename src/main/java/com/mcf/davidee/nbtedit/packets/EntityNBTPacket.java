@@ -58,7 +58,7 @@ public class EntityNBTPacket implements IMessage {
 				player.getServerWorld().addScheduledTask(new Runnable() {
 					@Override
 					public void run() {
-						Entity entity = player.worldObj.getEntityByID(packet.entityID);
+						Entity entity = player.getServerWorld().getEntityByID(packet.entityID);
 						if (entity != null && NBTEdit.proxy.checkPermission(player)) {
 							try {
 								GameType preGameType = null;

@@ -110,7 +110,7 @@ public class GuiEditNBTTree extends GuiScreen {
 	}
 
 	public void updateScreen() {
-		if (!mc.thePlayer.isEntityAlive())
+		if (!mc.player.isEntityAlive())
 			quitWithoutSaving();
 		else
 			guiTree.updateScreen();
@@ -145,7 +145,7 @@ public class GuiEditNBTTree extends GuiScreen {
 	}
 
 	public Entity getEntity() {
-		return entity ? mc.theWorld.getEntityByID(entityOrX) : null;
+		return entity ? mc.world.getEntityByID(entityOrX) : null;
 	}
 
 	public boolean isTileEntity() {
