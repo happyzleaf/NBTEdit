@@ -11,8 +11,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiControls;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.nbt.NBTBase;
@@ -49,7 +49,7 @@ public class GuiNBTTree extends Gui {
 	private GuiNBTButton[] buttons;
 
 	private final int X_GAP = 10, START_X = 10, START_Y = 30;
-	private final int Y_GAP = Minecraft.getMinecraft().fontRendererObj.FONT_HEIGHT + 2;
+	private final int Y_GAP = Minecraft.getMinecraft().fontRenderer.FONT_HEIGHT + 2;
 
 	private int y, yClick, bottom, width, height, heightDiff, offset;
 
@@ -310,7 +310,7 @@ public class GuiNBTTree extends Gui {
 
 	protected void overlayBackground(int par1, int par2, int par3, int par4) {
 		Tessellator tessellator = Tessellator.getInstance();
-		VertexBuffer worldRenderer = tessellator.getBuffer();
+		BufferBuilder worldRenderer = tessellator.getBuffer();
 		mc.renderEngine.bindTexture(OPTIONS_BACKGROUND);
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		float var6 = 32.0F;
@@ -710,7 +710,7 @@ public class GuiNBTTree extends Gui {
 		}
 	}
 
-	private void putColor(VertexBuffer renderer, int argb, int p_178988_2_) {
+	private void putColor(BufferBuilder renderer, int argb, int p_178988_2_) {
 		int i = renderer.getColorIndex(p_178988_2_);
 		int j = argb >> 16 & 255;
 		int k = argb >> 8 & 255;

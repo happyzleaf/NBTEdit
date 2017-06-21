@@ -54,7 +54,7 @@ public class EntityNBTPacket implements IMessage {
 		@Override
 		public IMessage onMessage(final EntityNBTPacket packet, MessageContext ctx) {
 			if (ctx.side == Side.SERVER) {
-				final EntityPlayerMP player = ctx.getServerHandler().playerEntity;
+				final EntityPlayerMP player = ctx.getServerHandler().player;
 				player.getServerWorld().addScheduledTask(new Runnable() {
 					@Override
 					public void run() {

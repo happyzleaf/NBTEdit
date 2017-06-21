@@ -133,7 +133,7 @@ public class GuiEditNBTTree extends GuiScreen {
 	public void drawScreen(int x, int y, float par3) {
 		this.drawDefaultBackground();
 		guiTree.draw(x, y);
-		this.drawCenteredString(mc.fontRendererObj, this.screenTitle, this.width / 2, 5, 16777215);
+		this.drawCenteredString(mc.fontRenderer, this.screenTitle, this.width / 2, 5, 16777215);
 		if (guiTree.getWindow() == null)
 			super.drawScreen(x, y, par3);
 		else

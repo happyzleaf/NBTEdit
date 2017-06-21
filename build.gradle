@@ -1,26 +1,15 @@
 buildscript {
     repositories {
         jcenter()
-        maven {
-            name = "forge"
-            url = "http://files.minecraftforge.net/maven"
-        }
+        maven { url = "http://files.minecraftforge.net/maven" }
     }
     dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:2.2-SNAPSHOT'
+        classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
     }
 }
-repositories {
-    mavenCentral()
-    maven {
-        name = "sonatype"
-        url 'http://oss.sonatype.org/content/repositories/snapshots'
-    }
-}
-
 apply plugin: 'net.minecraftforge.gradle.forge'
 
-version = "1.11.2-2.0.2"
+version = "1.12-2.0.2"
 group = "com.mcf.davidee.nbtedit"
 archivesBaseName = "NBTEdit"
 
@@ -29,10 +18,10 @@ sourceCompatibility = targetCompatibility = 1.7
 idea { module { inheritOutputDirs = true } }
 
 minecraft {
-    version = "1.11.2-13.20.0.2227"
+    version = "1.12-14.21.0.2341"
     runDir = "run"
-    mappings = "snapshot_20161220"
-    //makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
+    mappings = "snapshot_20170617"
+    // makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
 }
 
 task deobfJar(type: Jar) {

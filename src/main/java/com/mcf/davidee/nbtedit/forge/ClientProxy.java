@@ -9,10 +9,10 @@ import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderGlobal;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.Entity;
@@ -133,7 +133,7 @@ public class ClientProxy extends CommonProxy {
 		double var10 = player.lastTickPosY + (player.posY - player.lastTickPosY) * (double) f;
 		double var12 = player.lastTickPosZ + (player.posZ - player.lastTickPosZ) * (double) f;
 
-		aabb = aabb.addCoord(-var8, -var10, -var12);
+		aabb = aabb.grow(-var8, -var10, -var12);
 
 		GlStateManager.enableBlend();
 		GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
@@ -143,7 +143,7 @@ public class ClientProxy extends CommonProxy {
 		GlStateManager.depthMask(false);
 
 		Tessellator tessellator = Tessellator.getInstance();
-		VertexBuffer worldRenderer = tessellator.getBuffer();
+		BufferBuilder worldRenderer = tessellator.getBuffer();
 
 		worldRenderer.begin(3, DefaultVertexFormats.POSITION_COLOR);
 		worldRenderer.pos(aabb.minX, aabb.minY, aabb.minZ);
