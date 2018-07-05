@@ -1,5 +1,6 @@
 package com.mcf.davidee.nbtedit.gui;
 
+import com.mcf.davidee.nbtedit.packets.TeamNBTPacket;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.Entity;
@@ -17,11 +18,13 @@ import com.mcf.davidee.nbtedit.packets.TileNBTPacket;
 import java.io.IOException;
 
 public class GuiEditNBTTree extends GuiScreen {
-
 	public final int entityOrX, y, z;
 	private boolean entity;
 	protected String screenTitle;
 	private GuiNBTTree guiTree;
+	
+	public boolean poke = false;
+	public int slot = -1;
 
 	public GuiEditNBTTree(int entity, NBTTagCompound tag) {
 		this.entity = true;
@@ -39,6 +42,18 @@ public class GuiEditNBTTree extends GuiScreen {
 		this.z = pos.getZ();
 		screenTitle = "NBTEdit -- TileEntity at " + pos.getX() + "," + pos.getY() + "," + pos.getZ();
 		guiTree = new GuiNBTTree(new NBTTree(tag));
+	}
+	
+	public GuiEditNBTTree(NBTTagCompound tag, int slot) {
+		poke = true;
+		this.slot = slot;
+		screenTitle = "NBTEdit -- Team Member #" + this.slot;
+		guiTree = new GuiNBTTree(new NBTTree(tag));
+		
+		entity = false;
+		entityOrX = -1;
+		y = -1;
+		z = -1;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -117,9 +132,11 @@ public class GuiEditNBTTree extends GuiScreen {
 	}
 
 	private void quitWithSave() {
-		if (entity)
+		if (poke) {
+			NBTEdit.NETWORK.INSTANCE.sendToServer(new TeamNBTPacket(slot, guiTree.getNBTTree().toNBTTagCompound()));
+		} else if (entity) {
 			NBTEdit.NETWORK.INSTANCE.sendToServer(new EntityNBTPacket(entityOrX, guiTree.getNBTTree().toNBTTagCompound()));
-		else
+		} else
 			NBTEdit.NETWORK.INSTANCE.sendToServer(new TileNBTPacket(new BlockPos(entityOrX, y, z), guiTree.getNBTTree().toNBTTagCompound()));
 		mc.displayGuiScreen(null);
 		mc.setIngameFocus();

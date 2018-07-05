@@ -23,6 +23,9 @@ public class CommonProxy {
 
 	public void openEditGUI(BlockPos pos, NBTTagCompound tag) {
 	}
+	
+	public void openEditGUI(NBTTagCompound tag, int slot) {
+	}
 
 	public void sendMessage(EntityPlayer player, String message, TextFormatting color) {
 		if (player != null) {

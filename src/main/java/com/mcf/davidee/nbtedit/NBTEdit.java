@@ -30,7 +30,7 @@ import java.io.File;
 public class NBTEdit {
 	public static final String MODID = "nbtedit";
 	public static final String NAME = "In-game NBTEdit";
-	public static final String VERSION = "1.11.2-2.0.2";
+	public static final String VERSION = "1.11.2-2.0.2-poke";
 
 	public static final NBTNodeSorter SORTER = new NBTNodeSorter();
 	public static final PacketHandler NETWORK = new PacketHandler();

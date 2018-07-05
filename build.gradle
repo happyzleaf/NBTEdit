@@ -9,16 +9,17 @@ buildscript {
 }
 apply plugin: 'net.minecraftforge.gradle.forge'
 
-version = "1.12-2.0.2"
+version = "1.12-2.0.2-poke"
 group = "com.mcf.davidee.nbtedit"
 archivesBaseName = "NBTEdit"
 
-sourceCompatibility = targetCompatibility = 1.7
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
 
 idea { module { inheritOutputDirs = true } }
 
 minecraft {
-    version = "1.12-14.21.0.2341"
+    version = "1.12.2-14.23.1.2555"
     runDir = "run"
     mappings = "snapshot_20170617"
     // makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.

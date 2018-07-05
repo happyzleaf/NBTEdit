@@ -1,6 +1,7 @@
 package com.mcf.davidee.nbtedit.packets;
 
 import com.mcf.davidee.nbtedit.NBTEdit;
+import com.pixelmonmod.pixelmon.storage.PixelmonStorage;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -15,17 +16,16 @@ import org.apache.logging.log4j.Level;
 
 /**
  * Created by Jay113355 on 6/28/2016.
- *
  */
 public class PacketHandler {
 	public SimpleNetworkWrapper INSTANCE;
 	private static int ID = 0;
-
+	
 	public void initialize() {
 		INSTANCE = NetworkRegistry.INSTANCE.newSimpleChannel(NBTEdit.MODID);
 		registerPackets();
 	}
-
+	
 	public void registerPackets() {
 		INSTANCE.registerMessage(TileRequestPacket.Handler.class, TileRequestPacket.class, ID++, Side.SERVER);
 		INSTANCE.registerMessage(TileNBTPacket.Handler.class, TileNBTPacket.class, ID++, Side.CLIENT);
@@ -34,8 +34,11 @@ public class PacketHandler {
 		INSTANCE.registerMessage(EntityNBTPacket.Handler.class, EntityNBTPacket.class, ID++, Side.CLIENT);
 		INSTANCE.registerMessage(EntityNBTPacket.Handler.class, EntityNBTPacket.class, ID++, Side.SERVER);
 		INSTANCE.registerMessage(MouseOverPacket.Handler.class, MouseOverPacket.class, ID++, Side.CLIENT);
+		INSTANCE.registerMessage(EntityRequestTeamPacket.Handler.class, EntityRequestTeamPacket.class, ID++, Side.SERVER);
+		INSTANCE.registerMessage(TeamNBTPacket.Handler.class, TeamNBTPacket.class, ID++, Side.CLIENT);
+		INSTANCE.registerMessage(TeamNBTPacket.Handler.class, TeamNBTPacket.class, ID++, Side.SERVER);
 	}
-
+	
 	/**
 	 * Sends a TileEntity's nbt data to the player for editing.
 	 *
@@ -60,7 +63,7 @@ public class PacketHandler {
 			});
 		}
 	}
-
+	
 	/**
 	 * Sends a Entity's nbt data to the player for editing.
 	 *
@@ -85,6 +88,19 @@ public class PacketHandler {
 					} else {
 						NBTEdit.proxy.sendMessage(player, "\"Error - Unknown EntityID #" + entityId, TextFormatting.RED);
 					}
+				}
+			});
+		}
+	}
+	
+	public void sendTeamMember(EntityPlayerMP player, int slot) {
+		if (NBTEdit.proxy.checkPermission(player)) {
+			player.getServerWorld().addScheduledTask(() -> {
+				NBTTagCompound nbt = PixelmonStorage.pokeBallManager.getPlayerStorage(player).get().partyPokemon[slot];
+				if (nbt == null) {
+					NBTEdit.proxy.sendMessage(player, "\"Error - Unknown Team Member #" + slot, TextFormatting.RED);
+				} else {
+					INSTANCE.sendToServer(new TeamNBTPacket(slot, nbt));
 				}
 			});
 		}
