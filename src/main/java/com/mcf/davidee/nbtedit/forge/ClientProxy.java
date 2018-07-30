@@ -43,6 +43,7 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
 import java.io.File;
+import java.util.Arrays;
 
 public class ClientProxy extends CommonProxy {
 
@@ -143,7 +144,9 @@ public class ClientProxy extends CommonProxy {
 		
 		if (NBTEditTeam.isPressed()) {
 			PixelmonData[] party = ServerStorageDisplay.getPokemon();
+			System.out.println("party = " + Arrays.toString(party));
 			if (party != null && party[GuiPixelmonOverlay.selectedPixelmon] != null) {
+				System.out.println("party[" + GuiPixelmonOverlay.selectedPixelmon + "] = " + party[GuiPixelmonOverlay.selectedPixelmon]);
 				NBTEdit.NETWORK.INSTANCE.sendToServer(new EntityRequestTeamPacket(GuiPixelmonOverlay.selectedPixelmon));
 			} else {
 				this.sendMessage(null, "Error - Team member selected", TextFormatting.RED);

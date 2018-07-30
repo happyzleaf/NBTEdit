@@ -1,7 +1,9 @@
 package com.mcf.davidee.nbtedit.packets;
 
 import com.mcf.davidee.nbtedit.NBTEdit;
+import com.pixelmonmod.pixelmon.entities.pixelmon.EntityPixelmon;
 import com.pixelmonmod.pixelmon.storage.PixelmonStorage;
+import com.pixelmonmod.pixelmon.storage.PlayerStorage;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -13,6 +15,8 @@ import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.relauncher.Side;
 import org.apache.logging.log4j.Level;
+
+import java.util.Optional;
 
 /**
  * Created by Jay113355 on 6/28/2016.
@@ -96,11 +100,17 @@ public class PacketHandler {
 	public void sendTeamMember(EntityPlayerMP player, int slot) {
 		if (NBTEdit.proxy.checkPermission(player)) {
 			player.getServerWorld().addScheduledTask(() -> {
-				NBTTagCompound nbt = PixelmonStorage.pokeBallManager.getPlayerStorage(player).get().partyPokemon[slot];
+				PlayerStorage storage = PixelmonStorage.pokeBallManager.getPlayerStorage(player).get();
+				NBTTagCompound nbt = storage.partyPokemon[slot];
 				if (nbt == null) {
 					NBTEdit.proxy.sendMessage(player, "\"Error - Unknown Team Member #" + slot, TextFormatting.RED);
 				} else {
-					INSTANCE.sendToServer(new TeamNBTPacket(slot, nbt));
+					Optional<EntityPixelmon> optEntity = storage.getAlreadyExists(storage.getIDFromPosition(slot), player.getServerWorld());
+					if (optEntity.isPresent()) {
+						INSTANCE.sendTo(new EntityNBTPacket(optEntity.get().getEntityId(), nbt), player);
+					} else {
+						INSTANCE.sendTo(new TeamNBTPacket(slot, nbt), player);
+					}
 				}
 			});
 		}
