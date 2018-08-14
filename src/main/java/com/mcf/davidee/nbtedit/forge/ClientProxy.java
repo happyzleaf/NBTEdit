@@ -7,9 +7,7 @@ import com.mcf.davidee.nbtedit.packets.EntityRequestPacket;
 import com.mcf.davidee.nbtedit.packets.EntityRequestTeamPacket;
 import com.mcf.davidee.nbtedit.packets.TileRequestPacket;
 import com.pixelmonmod.pixelmon.client.ServerStorageDisplay;
-import com.pixelmonmod.pixelmon.client.gui.GuiHelper;
 import com.pixelmonmod.pixelmon.client.gui.GuiPixelmonOverlay;
-import com.pixelmonmod.pixelmon.client.gui.GuiResources;
 import com.pixelmonmod.pixelmon.comm.PixelmonData;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
@@ -20,7 +18,6 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderGlobal;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.client.settings.GameSettings;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -32,7 +29,6 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
-import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.FMLClientHandler;
@@ -54,7 +50,7 @@ public class ClientProxy extends CommonProxy {
 	@Override
 	public void registerInformation() {
 		MinecraftForge.EVENT_BUS.register(this);
-		MinecraftForge.EVENT_BUS.register(new Overlay());
+		MinecraftForge.EVENT_BUS.register(new GuiListener());
 		SaveStates save = NBTEdit.getSaveStates();
 		save.load();
 		save.save();

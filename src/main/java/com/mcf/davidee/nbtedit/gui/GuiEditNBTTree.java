@@ -47,7 +47,7 @@ public class GuiEditNBTTree extends GuiScreen {
 	public GuiEditNBTTree(NBTTagCompound tag, int slot) {
 		poke = true;
 		this.slot = slot;
-		screenTitle = "NBTEdit -- Team Member #" + this.slot;
+		screenTitle = "NBTEdit -- Team Member #" + (this.slot + 1);
 		guiTree = new GuiNBTTree(new NBTTree(tag));
 		
 		entity = false;

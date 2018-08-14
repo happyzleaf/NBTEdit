@@ -103,7 +103,7 @@ public class PacketHandler {
 				PlayerStorage storage = PixelmonStorage.pokeBallManager.getPlayerStorage(player).get();
 				NBTTagCompound nbt = storage.partyPokemon[slot];
 				if (nbt == null) {
-					NBTEdit.proxy.sendMessage(player, "\"Error - Unknown Team Member #" + slot, TextFormatting.RED);
+					NBTEdit.proxy.sendMessage(player, "\"Error - Unknown Team Member #" + (slot + 1), TextFormatting.RED);
 				} else {
 					Optional<EntityPixelmon> optEntity = storage.getAlreadyExists(storage.getIDFromPosition(slot), player.getServerWorld());
 					if (optEntity.isPresent()) {
