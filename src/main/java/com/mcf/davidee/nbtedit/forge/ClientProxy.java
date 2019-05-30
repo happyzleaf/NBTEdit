@@ -6,9 +6,9 @@ import com.mcf.davidee.nbtedit.nbt.SaveStates;
 import com.mcf.davidee.nbtedit.packets.EntityRequestPacket;
 import com.mcf.davidee.nbtedit.packets.EntityRequestTeamPacket;
 import com.mcf.davidee.nbtedit.packets.TileRequestPacket;
-import com.pixelmonmod.pixelmon.client.ServerStorageDisplay;
 import com.pixelmonmod.pixelmon.client.gui.GuiPixelmonOverlay;
-import com.pixelmonmod.pixelmon.comm.PixelmonData;
+import com.pixelmonmod.pixelmon.client.gui.elements.GuiKeybindIcon;
+import com.pixelmonmod.pixelmon.client.storage.ClientStorageManager;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
@@ -22,6 +22,7 @@ import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
@@ -39,25 +40,28 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
 import java.io.File;
-import java.util.Arrays;
 
+/**
+ * Updated by happyz on 30/05/2019 (and before).
+ */
 public class ClientProxy extends CommonProxy {
-
-	public static KeyBinding NBTEditKey;
-
-	public static KeyBinding NBTEditTeam;
+	public static KeyBinding entityKeyBinding;
+	public static KeyBinding partyMemberKeyBinding;
 	
 	@Override
 	public void registerInformation() {
 		MinecraftForge.EVENT_BUS.register(this);
-		MinecraftForge.EVENT_BUS.register(new GuiListener());
+		
 		SaveStates save = NBTEdit.getSaveStates();
 		save.load();
 		save.save();
-		NBTEditKey = new KeyBinding("Select Entity", Keyboard.KEY_NONE, "key.categories.nbtedit");
-		ClientRegistry.registerKeyBinding(NBTEditKey);
-		NBTEditTeam = new KeyBinding("Select Party Member", Keyboard.KEY_N, "key.categories.nbtedit");
-		ClientRegistry.registerKeyBinding(NBTEditTeam);
+		
+		entityKeyBinding = new KeyBinding("Select Entity", Keyboard.KEY_NONE, "key.categories.nbtedit");
+		ClientRegistry.registerKeyBinding(entityKeyBinding);
+		partyMemberKeyBinding = new KeyBinding("Select Party Member", Keyboard.KEY_N, "key.categories.nbtedit");
+		ClientRegistry.registerKeyBinding(partyMemberKeyBinding);
+		
+		GuiPixelmonOverlay.icons.add(new GuiKeybindIcon(partyMemberKeyBinding, new ResourceLocation("nbtedit", "textures/gui/team_overlay.png")));
 	}
 
 	@Override
@@ -125,7 +129,7 @@ public class ClientProxy extends CommonProxy {
 
 	@SubscribeEvent
 	public void onKey(InputEvent.KeyInputEvent event) {
-		if (NBTEditKey.isPressed()) {
+		if (entityKeyBinding.isPressed()) {
 			RayTraceResult pos = Minecraft.getMinecraft().objectMouseOver;
 			if (pos != null) {
 				if (pos.entityHit != null) {
@@ -138,11 +142,8 @@ public class ClientProxy extends CommonProxy {
 			}
 		}
 		
-		if (NBTEditTeam.isPressed()) {
-			PixelmonData[] party = ServerStorageDisplay.getPokemon();
-			System.out.println("party = " + Arrays.toString(party));
-			if (party != null && party[GuiPixelmonOverlay.selectedPixelmon] != null) {
-				System.out.println("party[" + GuiPixelmonOverlay.selectedPixelmon + "] = " + party[GuiPixelmonOverlay.selectedPixelmon]);
+		if (partyMemberKeyBinding.isPressed()) {
+			if (ClientStorageManager.party.get(GuiPixelmonOverlay.selectedPixelmon) != null) {
 				NBTEdit.NETWORK.INSTANCE.sendToServer(new EntityRequestTeamPacket(GuiPixelmonOverlay.selectedPixelmon));
 			} else {
 				this.sendMessage(null, "Error - Team member selected", TextFormatting.RED);

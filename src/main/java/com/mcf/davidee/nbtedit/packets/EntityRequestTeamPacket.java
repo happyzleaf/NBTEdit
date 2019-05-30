@@ -35,7 +35,6 @@ public class EntityRequestTeamPacket implements IMessage {
 	public static class Handler implements IMessageHandler<EntityRequestTeamPacket, IMessage> {
 		@Override
 		public IMessage onMessage(EntityRequestTeamPacket packet, MessageContext ctx) {
-			System.out.println("received packet " + packet.slot);
 			EntityPlayerMP player = ctx.getServerHandler().player;
 			NBTEdit.log(Level.TRACE, player.getName() + " requested party member at slot " + packet.slot);
 			NBTEdit.NETWORK.sendTeamMember(player, packet.slot);
